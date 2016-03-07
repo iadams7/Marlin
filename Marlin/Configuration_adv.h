@@ -364,7 +364,7 @@
   //#define BABYSTEP_XY  //not only z, but also XY in the menu. more clutter, more functions
                        //not implemented for CoreXY and deltabots!
   #define BABYSTEP_INVERT_Z false  //true for inverse movements in Z
-  #define BABYSTEP_MULTIPLICATOR 1.5 //faster movements FG increased from 1 to 1.5
+  #define BABYSTEP_MULTIPLICATOR 2 //faster movements FG increased from 1 to 2
 #endif
 
 // @section extruder

@@ -2240,6 +2240,8 @@ inline void gcode_G28() {
   st_synchronize();
 
   // For auto bed leveling, clear the level matrix
+  // FG It would be lovely if this wasn't here, but identity matrix is needed for homing
+  // a more complex solution other than just deleting this code is necessary
   #if ENABLED(AUTO_BED_LEVELING_FEATURE)
     plan_bed_level_matrix.set_to_identity();
     #if ENABLED(DELTA)
@@ -2620,6 +2622,7 @@ inline void gcode_G28() {
    *  v Y-axis
    *
    */
+   //FG here is where the actual G29 is implemented
   inline void gcode_G29() {
 
     static int probe_point = -1;
@@ -2922,7 +2925,9 @@ inline void gcode_G28() {
       #endif // !DELTA
 
       int probePointCounter = 0;
-      bool zig = (auto_bed_leveling_grid_points & 1) ? true : false; //always end at [RIGHT_PROBE_BED_POSITION, BACK_PROBE_BED_POSITION]
+      // FG by reversing the logic in the following statement, our probe ends at [left,back]
+      //bool zig = (auto_bed_leveling_grid_points & 1) ? true : false; //always end at [RIGHT_PROBE_BED_POSITION, BACK_PROBE_BED_POSITION]
+      bool zig = (auto_bed_leveling_grid_points & 1) ? false : true; //always end at [RIGHT_PROBE_BED_POSITION, BACK_PROBE_BED_POSITION]
 
       for (int yCount = 0; yCount < auto_bed_leveling_grid_points; yCount++) {
         double yProbe = front_probe_bed_position + yGridSpacing * yCount;

@@ -56,6 +56,10 @@ static void lcd_status_screen();
   static void lcd_control_motion_menu();
   static void lcd_control_volumetric_menu();
 
+// bt ============================
+  static void lcd_z_offset_menu();
+// bt ============================
+
   #if ENABLED(HAS_LCD_CONTRAST)
     static void lcd_set_contrast();
   #endif
@@ -405,7 +409,12 @@ static void lcd_main_menu() {
     MENU_ITEM(submenu, MSG_TUNE, lcd_tune_menu);
   }
   else {
-    MENU_ITEM(submenu, MSG_PREPARE, lcd_prepare_menu);
+
+   // bt ===================
+   MENU_ITEM(submenu, MSG_Z_OFFSET_MENU, lcd_z_offset_menu);
+  // bt ===================
+  
+   MENU_ITEM(submenu, MSG_PREPARE, lcd_prepare_menu);
     #if ENABLED(DELTA_CALIBRATION_MENU)
       MENU_ITEM(submenu, MSG_DELTA_CALIBRATE, lcd_delta_calibrate_menu);
     #endif
@@ -713,6 +722,35 @@ void lcd_cooldown() {
   fanSpeed = 0;
   lcd_return_to_status();
 }
+
+// bt ======================
+/**
+ *
+ * "Z Offset" submenu
+ *
+ */
+
+static void lcd_z_offset_menu() {
+  START_MENU();
+
+  //
+  // ^ Main
+  //
+  MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+  //
+  // Set Z offset ubmenu
+  //
+  MENU_MULTIPLIER_ITEM_EDIT(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -.09, -.01);
+  //
+  // Store EPROM settings
+  //
+  MENU_ITEM(function, MSG_STORE_EPROM, Config_StoreSettings);
+ 
+  END_MENU();
+}
+// bt =================
+
+
 
 /**
  *

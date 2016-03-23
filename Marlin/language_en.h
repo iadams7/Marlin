@@ -17,6 +17,14 @@
   #define DISPLAY_CHARSET_ISO10646_1 // use the better font on full graphic displays.
 #endif
 
+// bt =====================
+#ifndef MSG_Z_OFFSET_MENU
+#define MSG_Z_OFFSET_MENU                       "Z Offset"
+#endif
+#ifndef MSG_SET_Z_OFFSET
+#define MSG_SET_Z_OFFSET                       "Set Z Offset"
+#endif
+// bt =====================
 
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME " ready."

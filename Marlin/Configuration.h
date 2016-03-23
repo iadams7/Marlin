@@ -77,7 +77,11 @@ Here are some standard links for getting your machine calibrated:
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
 //LG version shown after "ready" message
-#define CUSTOM_MACHINE_NAME "JB V 0.9"
+
+//bt =================
+//#define CUSTOM_MACHINE_NAME "JB V 0.9"
+#define CUSTOM_MACHINE_NAME "JB V 0.9z"
+// bt =================
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)

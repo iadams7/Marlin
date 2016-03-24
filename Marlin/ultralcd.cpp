@@ -740,7 +740,7 @@ static void lcd_z_offset_menu() {
   //
   // Set Z offset ubmenu
   //
-  MENU_MULTIPLIER_ITEM_EDIT(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -.09, -.01);
+  MENU_MULTIPLIER_ITEM_EDIT(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -10.00, 0.00);
   //
   // Store EPROM settings
   //

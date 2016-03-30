@@ -250,7 +250,10 @@ static void lcd_implementation_init() {
     } while (u8g.nextPage());
 
     if (show_bootscreen) {
-      delay(1000);
+      // bt =========== changed delay from 1000 to 5000
+      // delay(1000);
+      delay(5000);
+      // bt =========== changed delay from 1000 to 5000
       show_bootscreen = false;
     }
   #endif

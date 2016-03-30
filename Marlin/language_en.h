@@ -17,14 +17,6 @@
   #define DISPLAY_CHARSET_ISO10646_1 // use the better font on full graphic displays.
 #endif
 
-// bt =====================
-#ifndef MSG_Z_OFFSET_MENU
-#define MSG_Z_OFFSET_MENU                       "Z Offset"
-#endif
-#ifndef MSG_SET_Z_OFFSET
-#define MSG_SET_Z_OFFSET                       "Set Z Offset"
-#endif
-// bt =====================
 
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME " ready."
@@ -44,6 +36,97 @@
 #ifndef MSG_DISABLE_STEPPERS
   #define MSG_DISABLE_STEPPERS                "Disable steppers"
 #endif
+
+// bt ======== add new menu labels 
+#ifndef MSG_WELCOME_SCREEN
+#define MSG_WELCOME_SCREEN                  "IMade3D Welcomes You!"
+#endif
+#ifndef MSG_Z_OFFSET_MENU
+#define MSG_Z_OFFSET_MENU                       "Z Offset"
+#endif
+#ifndef MSG_WATCH_NEW
+#define MSG_WATCH_NEW                       "Status"
+#endif
+#ifndef MSG_HOME_X_Y
+#define MSG_HOME_X_Y                        "Home X and Y"
+#endif
+#ifndef MSG_HOME_Z
+#define MSG_HOME_Z                          "Home Z"
+#endif
+#ifndef MSG_SETTINGS
+#define MSG_SETTINGS                        "Settings"
+#endif
+#ifndef MSG_FLOWRATE
+#define MSG_FLOWRATE                        "Flowrate"
+#endif
+#ifndef MSG_FEEDRATE
+#define MSG_FEEDRATE                        "Feedrate (speed)"
+#endif
+#ifndef MSG_SET
+#define MSG_SET                             "Quick Set"
+#endif
+#ifndef MSG_SET_Z_OFFSET
+#define MSG_SET_Z_OFFSET                     "Set Z Offset"
+#endif
+#ifndef MSG_HOTEND_TEMP
+#define MSG_HOTEND_TEMP                     "Hotend Temp"
+#endif
+#ifndef MSG_FANSPEED
+#define MSG_FANSPEED                        "Fan Speed"
+#endif
+#ifndef MSG_SETTINGS
+#define MSG_SETTINGS                        "Settings"
+#endif
+#ifndef MSG_CALIBRATE_Z_OFFSET
+#define MSG_CALIBRATE_Z_OFFSET              "Calibrate Z Offset"
+#endif
+#ifndef MSG_TEMPERATURE
+#define MSG_TEMPERATURE                     "Temperature"
+#endif
+#ifndef MSG_MOTION
+#define MSG_MOTION                          "Motion"
+#endif
+#ifndef MSG_MORE
+#define MSG_MORE                            "More"
+#endif
+#ifndef MSG_FAN_SPEED_NEW
+#define MSG_FAN_SPEED_NEW                   "Fan Speed"
+#endif
+#ifndef MSG_FILAMENTCHANGE_NEW
+#define MSG_FILAMENTCHANGE_NEW              "Change Filament"
+#endif
+#ifndef MSG_M851_Z0
+#define MSG_M851_Z0                         "M851 Z0"
+#endif
+#ifndef MSG_G28
+#define MSG_G28                             "G28"
+#endif
+#ifndef MSG_G29
+#define MSG_G29                             "G29"
+#endif
+#ifndef MSG_G1_X50_Y30_F5000
+#define MSG_G1_X50_Y30_F5000                "G1 X50 Y30 F5000"
+#endif
+#ifndef MSG_G1_Z0_0
+#define MSG_G1_Z0_0                             "G1 Z0.0"
+#endif
+#ifndef MSG_G92_Z10
+#define MSG_G92_Z10                             "G92 Z10"
+#endif
+#ifndef MSG_M114_Z
+#define MSG_M114_Z                             "M114 Z"
+#endif
+#ifndef MSG_M851_Z_OFFSET
+#define MSG_M851_Z_OFFSET                         "M851 Z-offset"
+#endif
+#ifndef MSG_M500
+#define MSG_M500                                 "M500"
+#endif
+#ifndef MSG_STUB
+#define MSG_STUB                                 "some text ..."
+#endif
+// bt =========== 
+
 #ifndef MSG_AUTO_HOME
   #define MSG_AUTO_HOME                       "Auto home"
 #endif

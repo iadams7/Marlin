@@ -422,8 +422,10 @@ static void lcd_main_menu() {
   MENU_ITEM(back, MSG_WATCH_NEW, lcd_status_screen);
   // bt =========== 
 
-
-  if (movesplanned() || IS_SD_PRINTING) {
+// bt ============= remove movesplanned
+//  if (movesplanned() || IS_SD_PRINTING) {
+  if (IS_SD_PRINTING) {
+// bt =============
 
 
     // bt =========== Change Menu
@@ -462,13 +464,13 @@ static void lcd_main_menu() {
     //
     MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
     //
-    // Home X and Y  --- bt How to do 2 gcode in one call
+    // Home X and Y 
     //
     MENU_ITEM(gcode, MSG_HOME_X_Y, PSTR("G28 XY"));
     //
-    // Home Z 
+    // Home Z bt ===== using Home All - to deal with Z probe off bed.
     //
-    MENU_ITEM(gcode, MSG_HOME_Z, PSTR("G28 Z"));
+    MENU_ITEM(gcode, MSG_HOME_Z, PSTR("G28"));
     //
     // Set menu
     //
@@ -848,7 +850,14 @@ static void lcd_calibrate_z_offset_menu() {
   //
   MENU_ITEM(back, MSG_SETTINGS, lcd_settings_menu);
 
-  MENU_ITEM(gcode, MSG_STUB, PSTR(""));
+  MENU_ITEM(gcode, "->z-cal.imade3d.com<-", PSTR(""));
+  MENU_ITEM(gcode, "Slide a piece of paper", PSTR(""));
+  MENU_ITEM(gcode, "under nozzle and twist", PSTR(""));
+  MENU_ITEM(gcode, "Z motor by hand until", PSTR(""));
+  MENU_ITEM(gcode, "the paper can't move", PSTR(""));
+  MENU_ITEM(gcode, "easily.", PSTR(""));
+  MENU_ITEM(submenu, "Z-Cal Step 2", lcd_set_menu);
+
   MENU_ITEM(gcode, MSG_M851_Z0, PSTR("M851 Z"));
   MENU_ITEM(gcode, MSG_G28, PSTR("G28"));
   MENU_ITEM(gcode, MSG_G29, PSTR("G29"));
@@ -866,28 +875,14 @@ static void lcd_calibrate_z_offset_menu() {
 /**
  *
  * "Z Offset" submenu
- *  //
-  // Temperature
-  //
-  MENU_ITEM(submenu, MSG_TEMPERATURE, lcd_control_temperature_menu);
-  // Calibrate Z Offset Menu
-  //
-  // Motion
-  // 
-  MENU_ITEM(submenu, MSG_MOTION, lcd_control_motion_menu);
-  
-  MENU_ITEM(submenu, MSG_CALIBRATE_Z_OFFSET, lcd_calibrate_z_offset_menu);
-
-
  */
-
 static void lcd_z_offset_menu() {
   START_MENU();
 
   //
-  // ^ Settings
+  // ^ Quick Set
   //
-  MENU_ITEM(back, MSG_SETTINGS, lcd_settings_menu);
+  MENU_ITEM(back, MSG_SET, lcd_set_menu);
   //
   // Set Z offset
   //
@@ -922,7 +917,6 @@ static void lcd_settings_menu() {
   // Temperature
   //
   MENU_ITEM(submenu, MSG_TEMPERATURE, lcd_control_temperature_menu);
-  // Calibrate Z Offset Menu
   //
   // Motion
   // 
@@ -1437,7 +1431,9 @@ static void lcd_control_motion_menu() {
   // bt =========================
   
   #if ENABLED(AUTO_BED_LEVELING_FEATURE)
-    MENU_ITEM_EDIT(float32, MSG_ZPROBE_ZOFFSET, &zprobe_zoffset, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX);
+    // bt ====== removed
+    // MENU_ITEM_EDIT(float32, MSG_ZPROBE_ZOFFSET, &zprobe_zoffset, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX);
+    // bt =======
   #endif
   MENU_ITEM_EDIT(float5, MSG_ACC, &acceleration, 10, 99000);
   MENU_ITEM_EDIT(float3, MSG_VXY_JERK, &max_xy_jerk, 1, 990);

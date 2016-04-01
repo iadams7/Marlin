@@ -61,7 +61,12 @@ static void lcd_status_screen();
   static void lcd_set_menu();
   static void lcd_settings_menu();
   static void lcd_z_offset_menu();
+  static void lcd_z_offset_from_z_cal_menu();
   static void lcd_calibrate_z_offset_menu();
+  static void lcd_calibrate_z_offset_step_2();
+  static void lcd_calibrate_z_offset_step_3();
+  static void lcd_calibrate_z_offset_step_4();
+  static void lcd_move_z_z();
 // bt ============================
 
   #if ENABLED(HAS_LCD_CONTRAST)
@@ -838,10 +843,9 @@ static void lcd_set_menu() {
 
 /**
  *
- * "Calibrate Z Offset" submenu
+ * "Calibrate Z Offset (Step 1)" submenu
  *
  */
-
 static void lcd_calibrate_z_offset_menu() {
   START_MENU();
 
@@ -850,27 +854,193 @@ static void lcd_calibrate_z_offset_menu() {
   //
   MENU_ITEM(back, MSG_SETTINGS, lcd_settings_menu);
 
-  MENU_ITEM(gcode, "->z-cal.imade3d.com<-", PSTR(""));
+  MENU_ITEM(gcode, "> z-cal.imade3d.com <", PSTR(""));
   MENU_ITEM(gcode, "Slide a piece of paper", PSTR(""));
   MENU_ITEM(gcode, "under nozzle and twist", PSTR(""));
   MENU_ITEM(gcode, "Z motor by hand until", PSTR(""));
   MENU_ITEM(gcode, "the paper can't move", PSTR(""));
   MENU_ITEM(gcode, "easily.", PSTR(""));
-  MENU_ITEM(submenu, "Z-Cal Step 2", lcd_set_menu);
+  MENU_ITEM(submenu, "z-cal Step 2", lcd_calibrate_z_offset_step_2);
 
+  END_MENU();
+}
+  
+/**
+ *
+ * "Calibrate Z Offset (Step 2)" submenu
+ *
+ */
+static void lcd_calibrate_z_offset_step_2() {
+  START_MENU();
+
+  //
+  // ^ Step 1
+  //
+  MENU_ITEM(back, "z-cal Step 1", lcd_calibrate_z_offset_menu);
+
+  MENU_ITEM(gcode, "Loosen proximity", PSTR(""));
+  MENU_ITEM(gcode, "sensor bracket and ", PSTR(""));
+  MENU_ITEM(gcode, "slide 4 in. zip tie", PSTR(""));
+  MENU_ITEM(gcode, "between sensor and", PSTR(""));
+  MENU_ITEM(gcode, "bed. Retighten the", PSTR(""));
+  MENU_ITEM(gcode, "bracket.", PSTR(""));
+  MENU_ITEM(submenu, "z-cal Step 3", lcd_calibrate_z_offset_step_3);
+
+  END_MENU();
+}
+
+/**
+ *
+ * "Calibrate Z Offset (Step 3)" submenu
+ *
+ */
+static void lcd_calibrate_z_offset_step_3() {
+  START_MENU();
+
+  //
+  // ^ Step 2
+  //
+  MENU_ITEM(back,"z-cal Step 2", lcd_calibrate_z_offset_step_2);
+
+  MENU_ITEM(gcode, "The following codes will be", PSTR(""));
+  MENU_ITEM(gcode, "be automated. Please press", PSTR(""));
+  MENU_ITEM(gcode, "each manually:", PSTR(""));
   MENU_ITEM(gcode, MSG_M851_Z0, PSTR("M851 Z"));
   MENU_ITEM(gcode, MSG_G28, PSTR("G28"));
   MENU_ITEM(gcode, MSG_G29, PSTR("G29"));
   MENU_ITEM(gcode, MSG_G1_X50_Y30_F5000, PSTR("G1 X50 Y30 F5000"));
   MENU_ITEM(gcode, MSG_G1_Z0_0, PSTR("G1 Z0.0"));
   MENU_ITEM(gcode, MSG_G92_Z10, PSTR("G92 Z10"));
-  MENU_ITEM(gcode, MSG_STUB, PSTR(""));
-  MENU_ITEM(gcode, MSG_M114_Z, PSTR("M114 Z"));
-  MENU_ITEM(gcode, MSG_M851_Z_OFFSET, PSTR("M851 Z-offset"));
-  MENU_ITEM(gcode, MSG_M500, PSTR("M500"));
+  MENU_ITEM(submenu, "z-cal Step 4", lcd_calibrate_z_offset_step_4);
+
+  END_MENU();
+}
+
+/**
+ *
+ * "Calibrate Z Offset (Step 4)" submenu
+ *
+ */
+static void lcd_calibrate_z_offset_step_4() {
+  START_MENU();
+
+  //
+  // ^ Step 3
+  //
+  MENU_ITEM(back, "z-cal Step 3", lcd_calibrate_z_offset_step_3);
+
+  MENU_ITEM(gcode, "Slide a piece of paper", PSTR(""));
+  MENU_ITEM(gcode, "under nozzle and use", PSTR(""));
+  MENU_ITEM(gcode, "Set Z Menu/Motor Move until", PSTR(""));
+  MENU_ITEM(gcode, "the paper can't move", PSTR(""));
+  MENU_ITEM(gcode, "easily.", PSTR(""));
+  MENU_ITEM(submenu,"Set Z Menu", lcd_z_offset_from_z_cal_menu);
+
+//  MENU_ITEM(gcode, MSG_M114_Z, PSTR("M114 Z"));
+//  MENU_ITEM(gcode, MSG_M851_Z_OFFSET, PSTR("M851 Z-offset"));
+//  MENU_ITEM(gcode, MSG_M500, PSTR("M500"));
  
   END_MENU();
 }
+
+// bt Z Move routines ===============
+
+inline void line_to_current_z(AxisEnum axis) {
+  #if ENABLED(DELTA)
+    calculate_delta(current_position);
+    plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
+  #else
+    plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
+  #endif
+}
+
+/**
+ *
+ * "Z Offset from Z-cal" submenu
+ */
+static void lcd_z_offset_from_z_cal_menu() {
+  START_MENU();
+
+  //
+  // ^ z_cal Step 4
+  //
+  MENU_ITEM(back, "z-cal Step 4", lcd_calibrate_z_offset_step_4);
+  //
+  // Z Motor Move
+  //
+  MENU_ITEM(submenu,"Z Motor Move", lcd_move_z_z);
+  //
+  // Set Z offset
+  //
+  MENU_MULTIPLIER_ITEM_EDIT(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -1.0, 0.0);
+  //
+  // Store EPROM settings
+  //
+  MENU_ITEM(function, MSG_STORE_EPROM, Config_StoreSettings);
+ 
+  END_MENU();
+}
+
+/**
+ *
+ * "Move Z Axis" 
+ *
+ */
+
+float move_menu_scale_z;
+
+static void _lcd_move_z(const char* name, AxisEnum axis, int min, int max) {
+  if (encoderPosition != 0) {
+    refresh_cmd_timeout();
+    current_position[axis] += float((int)encoderPosition) * move_menu_scale_z;
+    if (min_software_endstops && current_position[axis] < min) current_position[axis] = min;
+    if (max_software_endstops && current_position[axis] > max) current_position[axis] = max;
+    encoderPosition = 0;
+    line_to_current_z(axis);
+    lcdDrawUpdate = 1;
+    move_menu_scale_z = 0.1;
+  }
+  if (lcdDrawUpdate) lcd_implementation_drawedit(name, ftostr31(current_position[axis]));
+  if (LCD_CLICKED) lcd_goto_menu(lcd_z_offset_from_z_cal_menu);
+}
+static void lcd_move_z_z() { _lcd_move_z(PSTR(MSG_MOVE_Z), Z_AXIS, Z_MIN_POS, Z_MAX_POS); }
+static void lcd_move_e_z(
+  #if EXTRUDERS > 1
+    uint8_t e
+  #endif
+) {
+  #if EXTRUDERS > 1
+    unsigned short original_active_extruder = active_extruder;
+    active_extruder = e;
+  #endif
+  if (encoderPosition != 0) {
+    current_position[E_AXIS] += float((int)encoderPosition) * move_menu_scale_z;
+    encoderPosition = 0;
+    line_to_current_z(E_AXIS);
+    lcdDrawUpdate = 1;
+  }
+  if (lcdDrawUpdate) {
+    PGM_P pos_label;
+    #if EXTRUDERS == 1
+      pos_label = PSTR(MSG_MOVE_E);
+    #else
+      switch (e) {
+        case 0: pos_label = PSTR(MSG_MOVE_E MSG_MOVE_E1); break;
+        case 1: pos_label = PSTR(MSG_MOVE_E MSG_MOVE_E2); break;
+        #if EXTRUDERS > 2
+          case 2: pos_label = PSTR(MSG_MOVE_E MSG_MOVE_E3); break;
+          #if EXTRUDERS > 3
+            case 3: pos_label = PSTR(MSG_MOVE_E MSG_MOVE_E4); break;
+          #endif //EXTRUDERS > 3
+        #endif //EXTRUDERS > 2
+      }
+    #endif //EXTRUDERS > 1
+    lcd_implementation_drawedit(pos_label, ftostr31(current_position[E_AXIS]));
+  }
+  if (LCD_CLICKED) lcd_goto_menu(lcd_z_offset_from_z_cal_menu);
+}
+
+
 
 /**
  *
@@ -1224,6 +1394,7 @@ static void lcd_move_menu() {
   //TODO:X,Y,Z,E
   END_MENU();
 }
+
 
 /**
  *

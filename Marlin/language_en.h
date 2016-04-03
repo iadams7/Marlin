@@ -42,7 +42,7 @@
 #define MSG_WELCOME_SCREEN                  "IMade3D Welcomes You!"
 #endif
 #ifndef MSG_Z_OFFSET_MENU
-#define MSG_Z_OFFSET_MENU                       "Z Offset"
+#define MSG_Z_OFFSET_MENU                       "Z Probe Offset"
 #endif
 #ifndef MSG_WATCH_NEW
 #define MSG_WATCH_NEW                       "Status"
@@ -66,7 +66,7 @@
 #define MSG_SET                             "Quick Set"
 #endif
 #ifndef MSG_SET_Z_OFFSET
-#define MSG_SET_Z_OFFSET                     "Set Z Offset"
+#define MSG_SET_Z_OFFSET                     "Z Probe Offset"
 #endif
 #ifndef MSG_HOTEND_TEMP
 #define MSG_HOTEND_TEMP                     "Hotend Temp"
@@ -78,7 +78,7 @@
 #define MSG_SETTINGS                        "Settings"
 #endif
 #ifndef MSG_CALIBRATE_Z_OFFSET
-#define MSG_CALIBRATE_Z_OFFSET              "Calibrate Z Offset"
+#define MSG_CALIBRATE_Z_OFFSET              "Calibrate Z Probe Offset"
 #endif
 #ifndef MSG_TEMPERATURE
 #define MSG_TEMPERATURE                     "Temperature"

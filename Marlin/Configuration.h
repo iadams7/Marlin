@@ -183,7 +183,10 @@ Here are some standard links for getting your machine calibrated:
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
 //LG set max to 245C  - OK for PLA & JellyBox. Original value was 275.
-#define HEATER_0_MAXTEMP 245
+// bt ====max to 260C  - per Filip -- Menu Calc = 260 - 15 = 245.
+//#define HEATER_0_MAXTEMP 245
+#define HEATER_0_MAXTEMP 260
+// bt ======
 #define HEATER_1_MAXTEMP 245
 #define HEATER_2_MAXTEMP 245
 #define HEATER_3_MAXTEMP 245

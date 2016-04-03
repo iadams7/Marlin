@@ -60,7 +60,6 @@ static void lcd_status_screen();
   static void lcd_more_menu();
   static void lcd_set_menu();
   static void lcd_settings_menu();
-  static void lcd_z_offset_menu();
   static void lcd_z_offset_from_z_cal_menu();
   static void lcd_calibrate_z_offset_menu();
   static void lcd_calibrate_z_offset_step_2();
@@ -814,9 +813,9 @@ static void lcd_set_menu() {
   MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
 
   //
-  // Z offset submenu
+  // Set Z Probe offset
   //
-      MENU_ITEM(submenu, MSG_Z_OFFSET_MENU, lcd_z_offset_menu);
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -1.0, 0.0,Config_StoreSettings);
   //
   // Hotend Temp
   //
@@ -835,6 +834,12 @@ static void lcd_set_menu() {
   // Fan Speed
   //
   MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED_NEW, &fanSpeed, 0, 255);
+  //
+  // Change filament
+  //
+//  #if ENABLED(FILAMENTCHANGEENABLE)
+     MENU_ITEM(gcode, MSG_FILAMENTCHANGE, PSTR("M600"));
+//  #endif
 
 
 
@@ -843,7 +848,7 @@ static void lcd_set_menu() {
 
 /**
  *
- * "Calibrate Z Offset (Step 1)" submenu
+ * "Calibrate Z Probe Offset (Step 1)" submenu
  *
  */
 static void lcd_calibrate_z_offset_menu() {
@@ -867,7 +872,7 @@ static void lcd_calibrate_z_offset_menu() {
   
 /**
  *
- * "Calibrate Z Offset (Step 2)" submenu
+ * "Calibrate Z Probe Offset (Step 2)" submenu
  *
  */
 static void lcd_calibrate_z_offset_step_2() {
@@ -891,7 +896,7 @@ static void lcd_calibrate_z_offset_step_2() {
 
 /**
  *
- * "Calibrate Z Offset (Step 3)" submenu
+ * "Calibrate Z Probe Offset (Step 3)" submenu
  *
  */
 static void lcd_calibrate_z_offset_step_3() {
@@ -918,7 +923,7 @@ static void lcd_calibrate_z_offset_step_3() {
 
 /**
  *
- * "Calibrate Z Offset (Step 4)" submenu
+ * "Calibrate Z Probe Offset (Step 4)" submenu
  *
  */
 static void lcd_calibrate_z_offset_step_4() {
@@ -943,7 +948,7 @@ static void lcd_calibrate_z_offset_step_4() {
   END_MENU();
 }
 
-// bt Z Move routines ===============
+// bt ========== Z Move routines ===============
 
 inline void line_to_current_z(AxisEnum axis) {
   #if ENABLED(DELTA)
@@ -972,12 +977,8 @@ static void lcd_z_offset_from_z_cal_menu() {
   //
   // Set Z offset
   //
-  MENU_MULTIPLIER_ITEM_EDIT(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -1.0, 0.0);
-  //
-  // Store EPROM settings
-  //
-  MENU_ITEM(function, MSG_STORE_EPROM, Config_StoreSettings);
- 
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -1.0, 0.0,Config_StoreSettings);
+  
   END_MENU();
 }
 
@@ -1042,28 +1043,6 @@ static void lcd_move_e_z(
 
 
 
-/**
- *
- * "Z Offset" submenu
- */
-static void lcd_z_offset_menu() {
-  START_MENU();
-
-  //
-  // ^ Quick Set
-  //
-  MENU_ITEM(back, MSG_SET, lcd_set_menu);
-  //
-  // Set Z offset
-  //
-  MENU_MULTIPLIER_ITEM_EDIT(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -1.0, 0.0);
-  //
-  // Store EPROM settings
-  //
-  MENU_ITEM(function, MSG_STORE_EPROM, Config_StoreSettings);
- 
-  END_MENU();
-}
 
 /**
  *

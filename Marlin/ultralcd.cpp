@@ -96,6 +96,9 @@ static void lcd_status_screen();
   static void menu_action_setting_edit_int3(const char* pstr, int* ptr, int minValue, int maxValue);
   static void menu_action_setting_edit_float3(const char* pstr, float* ptr, float minValue, float maxValue);
   static void menu_action_setting_edit_float32(const char* pstr, float* ptr, float minValue, float maxValue);
+  // bt ================
+  static void menu_action_setting_edit_float32bt(const char* pstr, float* ptr, float minValue, float maxValue);
+  // bt ================
   static void menu_action_setting_edit_float43(const char* pstr, float* ptr, float minValue, float maxValue);
   static void menu_action_setting_edit_float5(const char* pstr, float* ptr, float minValue, float maxValue);
   static void menu_action_setting_edit_float51(const char* pstr, float* ptr, float minValue, float maxValue);
@@ -105,6 +108,9 @@ static void lcd_status_screen();
   static void menu_action_setting_edit_callback_int3(const char* pstr, int* ptr, int minValue, int maxValue, menuFunc_t callbackFunc);
   static void menu_action_setting_edit_callback_float3(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
   static void menu_action_setting_edit_callback_float32(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
+  // bt ================
+  static void menu_action_setting_edit_callback_float32bt(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
+  // bt ================
   static void menu_action_setting_edit_callback_float43(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
   static void menu_action_setting_edit_callback_float5(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
   static void menu_action_setting_edit_callback_float51(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
@@ -815,7 +821,7 @@ static void lcd_set_menu() {
   //
   // Set Z Probe offset
   //
-  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -1.0, 0.0,Config_StoreSettings);
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, MSG_SET_Z_OFFSET, &zprobe_zoffset, -.99, .0,Config_StoreSettings);
   //
   // Hotend Temp
   //
@@ -941,10 +947,6 @@ static void lcd_calibrate_z_offset_step_4() {
   MENU_ITEM(gcode, "easily.", PSTR(""));
   MENU_ITEM(submenu,"Set Z Menu", lcd_z_offset_from_z_cal_menu);
 
-//  MENU_ITEM(gcode, MSG_M114_Z, PSTR("M114 Z"));
-//  MENU_ITEM(gcode, MSG_M851_Z_OFFSET, PSTR("M851 Z-offset"));
-//  MENU_ITEM(gcode, MSG_M500, PSTR("M500"));
- 
   END_MENU();
 }
 
@@ -977,7 +979,7 @@ static void lcd_z_offset_from_z_cal_menu() {
   //
   // Set Z offset
   //
-  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -1.0, 0.0,Config_StoreSettings);
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, MSG_SET_Z_OFFSET, &zprobe_zoffset, -1.0, 0.0,Config_StoreSettings);
   
   END_MENU();
 }
@@ -1040,9 +1042,6 @@ static void lcd_move_e_z(
   }
   if (LCD_CLICKED) lcd_goto_menu(lcd_z_offset_from_z_cal_menu);
 }
-
-
-
 
 /**
  *
@@ -1119,10 +1118,6 @@ static void lcd_more_menu() {
 }
 
 // bt ===============
-
-
-
-
 
 
 /**
@@ -1800,6 +1795,9 @@ static void lcd_control_volumetric_menu() {
 menu_edit_type(int, int3, itostr3, 1)
 menu_edit_type(float, float3, ftostr3, 1)
 menu_edit_type(float, float32, ftostr32, 100)
+  // bt ================
+menu_edit_type(float, float32bt, ftostr32bt, 100)
+  // bt ================
 menu_edit_type(float, float43, ftostr43, 1000)
 menu_edit_type(float, float5, ftostr5, 0.01)
 menu_edit_type(float, float51, ftostr51, 10)
@@ -2384,6 +2382,24 @@ char *ftostr32(const float& x) {
   conv[6] = 0;
   return conv;
 }
+
+// bt ===================
+// Convert float to string with -.45 format
+char *ftostr32bt(const float& x) {
+  long xx = x * 1000;
+  if (xx >= 0)
+    conv[0] = (xx / 1000) % 10 + '0';
+  else
+    conv[0] = '-';
+  xx = abs(xx);
+  conv[1] = '.';
+  conv[2] = (xx / 100) % 10 + '0';
+  conv[3] = (xx / 10) % 10 + '0';
+  conv[4] = (xx) % 10 ;
+  conv[5] = 0;
+  return conv;
+}
+// bt ===================
 
 // Convert float to string with 1.234 format
 char* ftostr43(const float& x) {

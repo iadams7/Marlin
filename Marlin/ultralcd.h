@@ -128,6 +128,9 @@ char* ftostr4sign(const float& x);
 char* ftostr31ns(const float& x); // float to string without sign character
 char* ftostr31(const float& x);
 char* ftostr32(const float& x);
+// bt ============
+char* ftostr32bt(const float& x);
+// bt ============
 char* ftostr43(const float& x);
 char* ftostr12ns(const float& x);
 char* ftostr32sp(const float& x); // remove zero-padding from ftostr32

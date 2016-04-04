@@ -33,7 +33,10 @@
   #define LCD_ALERTMESSAGEPGM(x) lcd_setalertstatuspgm(PSTR(x))
 
   #define LCD_UPDATE_INTERVAL 100
-  #define LCD_TIMEOUT_TO_STATUS 15000
+// bt =========
+//  #define LCD_TIMEOUT_TO_STATUS 15000
+  #define LCD_TIMEOUT_TO_STATUS 120000
+// bt =========
 
   #if ENABLED(ULTIPANEL)
     void lcd_buttons_update();

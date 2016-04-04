@@ -78,7 +78,7 @@
 #define MSG_SETTINGS                        "Settings"
 #endif
 #ifndef MSG_CALIBRATE_Z_OFFSET
-#define MSG_CALIBRATE_Z_OFFSET              "Calibrate Z Probe Offset"
+#define MSG_CALIBRATE_Z_OFFSET              "Calibr Z Probe Offset"
 #endif
 #ifndef MSG_TEMPERATURE
 #define MSG_TEMPERATURE                     "Temperature"

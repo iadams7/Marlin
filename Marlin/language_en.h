@@ -42,16 +42,13 @@
 #define MSG_WELCOME_SCREEN                  "IMade3D Welcomes You!"
 #endif
 #ifndef MSG_Z_OFFSET_MENU
-#define MSG_Z_OFFSET_MENU                       "Z Probe Offset"
+#define MSG_Z_OFFSET_MENU                       "Z probe offset"
 #endif
 #ifndef MSG_WATCH_NEW
 #define MSG_WATCH_NEW                       "Status"
 #endif
-#ifndef MSG_HOME_X_Y
-#define MSG_HOME_X_Y                        "Home X and Y"
-#endif
-#ifndef MSG_HOME_Z
-#define MSG_HOME_Z                          "Home Z"
+#ifndef MSG_HOME_X_Y_Z
+#define MSG_HOME_X_Y_Z                      "Home X Y Z"
 #endif
 #ifndef MSG_SETTINGS
 #define MSG_SETTINGS                        "Settings"
@@ -63,22 +60,22 @@
 #define MSG_FEEDRATE                        "Feedrate (speed)"
 #endif
 #ifndef MSG_SET
-#define MSG_SET                             "Quick Set"
+#define MSG_SET                             "Quick set"
 #endif
 #ifndef MSG_SET_Z_OFFSET
-#define MSG_SET_Z_OFFSET                     "Z Probe Offset"
+#define MSG_SET_Z_OFFSET                     "Z probe offset"
 #endif
 #ifndef MSG_HOTEND_TEMP
-#define MSG_HOTEND_TEMP                     "Hotend Temp"
+#define MSG_HOTEND_TEMP                     "Nozzle temp"
 #endif
 #ifndef MSG_FANSPEED
-#define MSG_FANSPEED                        "Fan Speed"
+#define MSG_FANSPEED                        "Fan speed"
 #endif
 #ifndef MSG_SETTINGS
 #define MSG_SETTINGS                        "Settings"
 #endif
 #ifndef MSG_CALIBRATE_Z_OFFSET
-#define MSG_CALIBRATE_Z_OFFSET              "Calibr Z Probe Offset"
+#define MSG_CALIBRATE_Z_OFFSET              "Cali Z probe offset"
 #endif
 #ifndef MSG_TEMPERATURE
 #define MSG_TEMPERATURE                     "Temperature"
@@ -90,40 +87,13 @@
 #define MSG_MORE                            "More"
 #endif
 #ifndef MSG_FAN_SPEED_NEW
-#define MSG_FAN_SPEED_NEW                   "Fan Speed"
+#define MSG_FAN_SPEED_NEW                   "Fan speed"
 #endif
 #ifndef MSG_FILAMENTCHANGE_NEW
-#define MSG_FILAMENTCHANGE_NEW              "Change Filament"
+#define MSG_FILAMENTCHANGE_NEW              "Change filament"
 #endif
-#ifndef MSG_M851_Z0
-#define MSG_M851_Z0                         "M851 Z0"
-#endif
-#ifndef MSG_G28
-#define MSG_G28                             "G28"
-#endif
-#ifndef MSG_G29
-#define MSG_G29                             "G29"
-#endif
-#ifndef MSG_G1_X50_Y30_F5000
-#define MSG_G1_X50_Y30_F5000                "G1 X50 Y30 F5000"
-#endif
-#ifndef MSG_G1_Z0_0
-#define MSG_G1_Z0_0                             "G1 Z0.0"
-#endif
-#ifndef MSG_G92_Z10
-#define MSG_G92_Z10                             "G92 Z10"
-#endif
-#ifndef MSG_M114_Z
-#define MSG_M114_Z                             "M114 Z"
-#endif
-#ifndef MSG_M851_Z_OFFSET
-#define MSG_M851_Z_OFFSET                         "M851 Z-offset"
-#endif
-#ifndef MSG_M500
-#define MSG_M500                                 "M500"
-#endif
-#ifndef MSG_STUB
-#define MSG_STUB                                 "some text ..."
+#ifndef MSG_BACK
+#define MSG_BACK                            "Go back"
 #endif
 // bt =========== 
 

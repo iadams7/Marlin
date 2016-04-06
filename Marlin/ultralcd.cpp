@@ -831,10 +831,6 @@ static void lcd_set_menu() {
   //
   MENU_ITEM(back, MSG_BACK, lcd_main_menu);
   //
-  // Set Z Probe offset menu
-  //
-  MENU_ITEM(submenu, MSG_SET_Z_OFFSET, lcd_set_z_probe_offset_menu);
-  //
   // Nozzle Temp
   //
   MENU_ITEM(submenu, MSG_HOTEND_TEMP, lcd_nozzle_temp_menu);
@@ -854,6 +850,10 @@ static void lcd_set_menu() {
   // Fan Speed
   //
   MENU_ITEM(submenu, MSG_FAN_SPEED_NEW, lcd_set_fan_speed_menu);
+  //
+  // Set Z Probe offset menu
+  //
+  MENU_ITEM(submenu, MSG_SET_Z_OFFSET, lcd_set_z_probe_offset_menu);
 
   END_MENU();
 }

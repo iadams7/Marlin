@@ -1252,17 +1252,17 @@ static void lcd_move_select_axis_bt() {
   //
   MENU_ITEM(back, MSG_BACK, lcd_main_menu);
 
-  MENU_ITEM(submenu,"Move X - 10mm", lcd_move_x_10mm_bt);
-  MENU_ITEM(submenu,"Move X -  1mm", lcd_move_x_1mm_bt);
-  MENU_ITEM(submenu,"Move X -  0.1mm", lcd_move_x_01mm_bt);
-  MENU_ITEM(submenu,"Move Y - 10mm", lcd_move_y_10mm_bt);
-  MENU_ITEM(submenu,"Move Y -  1mm", lcd_move_y_1mm_bt);
-  MENU_ITEM(submenu,"Move Y -  0.1mm", lcd_move_y_01mm_bt);
-  MENU_ITEM(submenu,"Move Z -  1mm", lcd_move_z_1mm_bt);
-  MENU_ITEM(submenu,"Move Z -  0.1mm", lcd_move_z_01mm_bt);
-  MENU_ITEM(submenu,"Move E - 10mm", lcd_move_e_10mm_bt);
-  MENU_ITEM(submenu,"Move E -  1mm", lcd_move_e_1mm_bt);
-  MENU_ITEM(submenu,"Move E -  0.1mm", lcd_move_e_01mm_bt);
+//  MENU_ITEM(submenu,"Move X - 10mm", lcd_move_x_10mm_bt);
+  MENU_ITEM(submenu,"Move X", lcd_move_x_1mm_bt);
+//  MENU_ITEM(submenu,"Move X -  0.1mm", lcd_move_x_01mm_bt);
+//  MENU_ITEM(submenu,"Move Y - 10mm", lcd_move_y_10mm_bt);
+  MENU_ITEM(submenu,"Move Y", lcd_move_y_1mm_bt);
+//  MENU_ITEM(submenu,"Move Y -  0.1mm", lcd_move_y_01mm_bt);
+  MENU_ITEM(submenu,"Move Z", lcd_move_z_1mm_bt);
+//  MENU_ITEM(submenu,"Move Z -  0.1mm", lcd_move_z_01mm_bt);
+//  MENU_ITEM(submenu,"Move E - 10mm", lcd_move_e_10mm_bt);
+  MENU_ITEM(submenu,"Move E", lcd_move_e_1mm_bt);
+//  MENU_ITEM(submenu,"Move E -  0.1mm", lcd_move_e_01mm_bt);
   
   END_MENU();
 }

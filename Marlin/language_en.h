@@ -95,6 +95,9 @@
 #ifndef MSG_BACK
 #define MSG_BACK                            "Go back"
 #endif
+#ifndef MSG_BABYSTEPPING
+#define MSG_BABYSTEPPING                     "Babystepping"
+#endif
 // bt =========== 
 
 #ifndef MSG_AUTO_HOME

@@ -1326,7 +1326,7 @@ static void lcd_more_menu() {
   //
   // Babystep Menu
   //
-  MENU_ITEM(submenu, "(Babystepping)", lcd_babystepping_menu);
+  MENU_ITEM(submenu, MSG_BABYSTEPPING, lcd_babystepping_menu);
   
   END_MENU();
 }

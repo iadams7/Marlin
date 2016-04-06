@@ -65,7 +65,7 @@ static void lcd_status_screen();
   static void lcd_calibrate_z_offset_step_2();
   static void lcd_calibrate_z_offset_step_3();
   static void lcd_calibrate_z_offset_step_4();
-  static void lcd_move_z_z();
+  static void lcd_move_z_bt();
   static void lcd_babystepping_menu();
   static void lcd_set_z_probe_offset_menu();
   static void lcd_nozzle_temp_menu();
@@ -82,6 +82,7 @@ static void lcd_status_screen();
   static void execute_bed_temp_gcode_75();
   static void lcd_set_feedrate_menu();
   static void lcd_set_fan_speed_menu();
+  static void lcd_move_select_axis_bt();
 // bt ============================
 
   #if ENABLED(HAS_LCD_CONTRAST)
@@ -434,7 +435,7 @@ static void lcd_return_to_status() { lcd_goto_menu(lcd_status_screen); }
 
 /**
  *
- * "Main" menu
+ * "Main" main menu
  *
  */
 
@@ -492,7 +493,7 @@ static void lcd_main_menu() {
     //
     // Move Axis
     //
-    MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
+    MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_select_axis_bt);
     //
     // Home X and Y and Z
     //
@@ -1090,7 +1091,8 @@ static void lcd_calibrate_z_offset_step_3() {
   MENU_ITEM(gcode, "until the paper", PSTR(""));
   MENU_ITEM(gcode, "can't move easily.", PSTR(""));
   MENU_ITEM(gcode, "easily.", PSTR(""));
-  MENU_ITEM(submenu,"Z Move", lcd_move_z_z);
+  MENU_ITEM(submenu,"Z Move", lcd_move_z_bt);
+  MENU_ITEM(submenu,"Next step", lcd_calibrate_z_offset_step_4);
   END_MENU();
 }
 
@@ -1115,38 +1117,134 @@ static void lcd_calibrate_z_offset_step_4() {
 }
 // bt ========== Z Move routines ===============
 
-inline void line_to_current_z(AxisEnum axis) {
-  #if ENABLED(DELTA)
-    calculate_delta(current_position);
-    plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
-  #else
-    plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
-  #endif
-}
-
 /**
  *
  * "Move Z Axis" 
  *
  */
+inline void line_to_current_bt(AxisEnum axis) {
+    plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
+}
 float move_menu_scale_z;
 
-static void _lcd_move_z(const char* name, AxisEnum axis, int min, int max) {
+static void _lcd_move_z_bt(const char* name, AxisEnum axis, int min, int max) {
   if (encoderPosition != 0) {
+    move_menu_scale_z = 0.1;
     refresh_cmd_timeout();
     current_position[axis] += float((int)encoderPosition) * move_menu_scale_z;
     if (min_software_endstops && current_position[axis] < min) current_position[axis] = min;
     if (max_software_endstops && current_position[axis] > max) current_position[axis] = max;
     encoderPosition = 0;
-    line_to_current_z(axis);
+    line_to_current_bt(axis);
     lcdDrawUpdate = 1;
-    move_menu_scale_z = 0.1;
   }
   if (lcdDrawUpdate) lcd_implementation_drawedit(name, ftostr31(current_position[axis]));
-  if (LCD_CLICKED) lcd_goto_menu(lcd_calibrate_z_offset_step_4);
+  if (LCD_CLICKED) lcd_calibrate_z_offset_step_4();
 }
-static void lcd_move_z_z() { 
-  _lcd_move_z(PSTR(MSG_MOVE_Z), Z_AXIS, 9.0, 10.0); 
+static void lcd_move_z_bt() { 
+  _lcd_move_z_bt(PSTR(MSG_MOVE_Z), Z_AXIS, 9.0, 10.0); 
+}
+
+// bt2 ======== Move All Axis routines
+
+//inline void line_to_current_bt(AxisEnum axis) {
+//  #if ENABLED(DELTA)
+//    calculate_delta(current_position);
+//    plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
+//  #else
+//    plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
+//  #endif
+//}
+float move_menu_scale_bt;
+
+/**
+ *
+ * "Move _lcd_move_bt
+ *
+ */
+static void _lcd_move_bt(const char* name, AxisEnum axis, int min, int max) {
+  if (encoderPosition != 0) {
+    refresh_cmd_timeout();
+    current_position[axis] += float((int)encoderPosition) * move_menu_scale_bt;
+    if (min_software_endstops && current_position[axis] < min) current_position[axis] = min;
+    if (max_software_endstops && current_position[axis] > max) current_position[axis] = max;
+    encoderPosition = 0;
+    line_to_current_bt(axis);
+    lcdDrawUpdate = 1;
+  }
+  if (lcdDrawUpdate) lcd_implementation_drawedit(name, ftostr31(current_position[axis]));
+  if (LCD_CLICKED) lcd_goto_menu(lcd_move_select_axis_bt);
+}
+/**
+ *
+ * "Move Select Axis" submenu
+ *
+ */
+static void lcd_move_x_10mm_bt() {
+  move_menu_scale_bt = 10.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_X), X_AXIS, X_MIN_POS, X_MAX_POS);
+}
+static void lcd_move_x_1mm_bt() {
+  move_menu_scale_bt = 1.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_X), X_AXIS, X_MIN_POS, X_MAX_POS);
+}
+static void lcd_move_x_01mm_bt() {
+  move_menu_scale_bt = 0.1;
+  _lcd_move_bt(PSTR(MSG_MOVE_X), X_AXIS, X_MIN_POS, X_MAX_POS);
+}
+static void lcd_move_y_10mm_bt() {
+  move_menu_scale_bt = 10.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_Y), Y_AXIS, Y_MIN_POS, Y_MAX_POS);
+}
+static void lcd_move_y_1mm_bt() {
+  move_menu_scale_bt = 1.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_Y), Y_AXIS, Y_MIN_POS, Y_MAX_POS);
+}
+static void lcd_move_y_01mm_bt() {
+  move_menu_scale_bt = 0.1;
+  _lcd_move_bt(PSTR(MSG_MOVE_Y), Y_AXIS, Y_MIN_POS, Y_MAX_POS);
+}
+static void lcd_move_z_1mm_bt() {
+  move_menu_scale_bt = 1.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_Z), Z_AXIS, Z_MIN_POS, Z_MAX_POS);
+}
+static void lcd_move_z_01mm_bt() {
+  move_menu_scale_bt = 0.1;
+  _lcd_move_bt(PSTR(MSG_MOVE_Z), Z_AXIS, Z_MIN_POS, Z_MAX_POS);
+}
+static void lcd_move_e_10mm_bt() {
+  move_menu_scale_bt = 10.0;
+//  _lcd_move_bt(PSTR(MSG_MOVE_E), E_AXIS, E_MIN_POS, E_MAX_POS);
+}
+static void lcd_move_e_1mm_bt() {
+  move_menu_scale_bt = 1.0;
+//  _lcd_move_bt(PSTR(MSG_MOVE_E), E_AXIS, E_MIN_POS, E_MAX_POS);
+}
+static void lcd_move_e_01mm_bt() {
+  move_menu_scale_bt = 0.1;
+//  _lcd_move_bt(PSTR(MSG_MOVE_E), E_AXIS, E_MIN_POS, E_MAX_POS);
+}
+
+static void lcd_move_select_axis_bt() {
+  START_MENU();
+  //
+  // ^ Main
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
+
+  MENU_ITEM(submenu,"Move X - 10mm", lcd_move_x_10mm_bt);
+  MENU_ITEM(submenu,"Move X -  1mm", lcd_move_x_1mm_bt);
+  MENU_ITEM(submenu,"Move X -  0.1mm", lcd_move_x_01mm_bt);
+  MENU_ITEM(submenu,"Move Y - 10mm", lcd_move_y_10mm_bt);
+  MENU_ITEM(submenu,"Move Y -  1mm", lcd_move_y_1mm_bt);
+  MENU_ITEM(submenu,"Move Y -  0.1mm", lcd_move_y_01mm_bt);
+  MENU_ITEM(submenu,"Move Z -  1mm", lcd_move_z_1mm_bt);
+  MENU_ITEM(submenu,"Move Z -  0.1mm", lcd_move_z_01mm_bt);
+  MENU_ITEM(submenu,"Move E - 10mm", lcd_move_e_10mm_bt);
+  MENU_ITEM(submenu,"Move E -  1mm", lcd_move_e_1mm_bt);
+  MENU_ITEM(submenu,"Move E -  0.1mm", lcd_move_e_01mm_bt);
+  
+  END_MENU();
 }
 
 /**
@@ -1361,6 +1459,7 @@ inline void line_to_current(AxisEnum axis) {
  *
  */
 
+// bt1
 float move_menu_scale;
 static void lcd_move_menu_axis();
 

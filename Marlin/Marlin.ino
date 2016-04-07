@@ -32,6 +32,12 @@
 /* All the implementation is done in *.cpp files to get better compatibility with avr-gcc without the Arduino IDE */
 /* Use this file to help the Arduino IDE find which Arduino libraries are needed and to keep documentation on GCode */
 
+/* Modification comments: 
+ *  bt - Bruce Troutman   bruce@imade3d,com
+ *  fg - Filip Goc        filip@imade3d.com
+ *  lg - Ladi Goc         ladi@imade3d.com
+ */ 
+ 
 #include "Configuration.h"
 #include "pins.h"
 

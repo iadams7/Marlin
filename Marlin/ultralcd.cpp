@@ -439,6 +439,13 @@ static void lcd_return_to_status() { lcd_goto_menu(lcd_status_screen); }
  *
  */
 
+float zprobe_adj = 0;
+
+static void update_zprobe_zoffset() {
+  zprobe_zoffset = zprobe_zoffset + zprobe_adj;
+  zprobe_adj = 0;
+  Config_StoreSettings();
+}
 static void lcd_main_menu() {
   START_MENU();
   // bt =========== 
@@ -498,6 +505,10 @@ static void lcd_main_menu() {
     // Home X and Y and Z
     //
     MENU_ITEM(gcode, MSG_HOME_X_Y_Z, PSTR("G28"));
+    //
+    // 1st Layer Adj.
+    //
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "Nozzle +up/-dn", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
     //
     // Set menu
     //
@@ -1101,7 +1112,7 @@ static void lcd_calibrate_z_offset_step_3() {
  *
  */
 static void set_z_probe_offset(){
-  zprobe_zoffset = 10 - current_position[Z_AXIS] + 0.1;
+  zprobe_zoffset = -1 * (10 - current_position[Z_AXIS] + 0.1);
   Config_StoreSettings();
   lcd_goto_menu(lcd_main_menu);
 }
@@ -1113,12 +1124,6 @@ static void lcd_calibrate_z_offset_step_4() {
   //
   MENU_ITEM(back, MSG_BACK, lcd_calibrate_z_offset_step_3);
   MENU_ITEM(function, "Set Z probe offset", set_z_probe_offset);
-//  MENU_ITEM(gcode, "1-Calculate offset:", PSTR(""));
-//  MENU_ITEM(gcode, "10 minus", PSTR(""));
-//  MENU_ITEM(gcode, "z move value", PSTR(""));
-//  MENU_ITEM(gcode, "plus 0.1", PSTR(""));
-//  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "2-Set Z Probe", &zprobe_zoffset, -1.0, 0.0,Config_StoreSettings);
-//  MENU_ITEM(submenu, "4-Main Menu", lcd_main_menu);
   END_MENU();
 }
 // bt ========== Z Move routines ===============

@@ -1092,7 +1092,6 @@ static void lcd_calibrate_z_offset_step_3() {
   MENU_ITEM(gcode, "can't move easily.", PSTR(""));
   MENU_ITEM(gcode, "easily.", PSTR(""));
   MENU_ITEM(submenu,"Z Move", lcd_move_z_bt);
-  MENU_ITEM(submenu,"Next step", lcd_calibrate_z_offset_step_4);
   END_MENU();
 }
 
@@ -1135,11 +1134,11 @@ static void _lcd_move_z_bt(const char* name, AxisEnum axis, int min, int max) {
     if (min_software_endstops && current_position[axis] < min) current_position[axis] = min;
     if (max_software_endstops && current_position[axis] > max) current_position[axis] = max;
     encoderPosition = 0;
-    line_to_current_bt(axis);
+    line_to_current_bt(axis);    //used by _lcd_move_bt and _lcd_move_z_bt and _lcd_move_e_bt
     lcdDrawUpdate = 1;
   }
   if (lcdDrawUpdate) lcd_implementation_drawedit(name, ftostr31(current_position[axis]));
-  if (LCD_CLICKED) lcd_calibrate_z_offset_step_4();
+  if (LCD_CLICKED) lcd_goto_menu(lcd_calibrate_z_offset_step_4,true);
 }
 static void lcd_move_z_bt() { 
   _lcd_move_z_bt(PSTR(MSG_MOVE_Z), Z_AXIS, 9.0, 10.0); 
@@ -1147,14 +1146,7 @@ static void lcd_move_z_bt() {
 
 // bt2 ======== Move All Axis routines
 
-//inline void line_to_current_bt(AxisEnum axis) {
-//  #if ENABLED(DELTA)
-//    calculate_delta(current_position);
-//    plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
-//  #else
-//    plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
-//  #endif
-//}
+
 float move_menu_scale_bt;
 
 /**
@@ -1169,12 +1161,11 @@ static void _lcd_move_bt(const char* name, AxisEnum axis, int min, int max) {
     if (min_software_endstops && current_position[axis] < min) current_position[axis] = min;
     if (max_software_endstops && current_position[axis] > max) current_position[axis] = max;
     encoderPosition = 0;
-    line_to_current_bt(axis);
+    line_to_current_bt(axis);  //used by _lcd_move_bt and _lcd_move_z_bt and _lcd_move_e_bt
     lcdDrawUpdate = 1;
   }
   if (lcdDrawUpdate) lcd_implementation_drawedit(name, ftostr31(current_position[axis]));
-  if (LCD_CLICKED) lcd_goto_menu(lcd_move_select_axis_bt);
-  
+  if (LCD_CLICKED) lcd_goto_menu(lcd_move_select_axis_bt,true);  
 }
 
 /**
@@ -1186,12 +1177,12 @@ static void _lcd_move_e_bt(const char* name, AxisEnum axis) {
   if (encoderPosition != 0) {
     current_position[E_AXIS] += float((int)encoderPosition) * move_menu_scale_bt;
     encoderPosition = 0;
-    line_to_current_bt(E_AXIS);
+    line_to_current_bt(E_AXIS);   //used by _lcd_move_bt and _lcd_move_z_bt and _lcd_move_e_bt
     lcdDrawUpdate = 1;
   }
 
   if (lcdDrawUpdate) lcd_implementation_drawedit(PSTR(MSG_MOVE_E), ftostr31(current_position[E_AXIS]));
-  if (LCD_CLICKED) lcd_goto_menu(lcd_move_select_axis_bt);
+  if (LCD_CLICKED) lcd_goto_menu(lcd_move_select_axis_bt,true);
   
 }
 

@@ -1100,18 +1100,25 @@ static void lcd_calibrate_z_offset_step_3() {
  * "Calibrate Z Probe Offset (Step 4)" submenu
  *
  */
+static void set_z_probe_offset(){
+  zprobe_zoffset = 10 - current_position[Z_AXIS] + 0.1;
+  Config_StoreSettings();
+  lcd_goto_menu(lcd_main_menu);
+}
+
 static void lcd_calibrate_z_offset_step_4() {  
   START_MENU();
   //
   // ^ Step 3
   //
   MENU_ITEM(back, MSG_BACK, lcd_calibrate_z_offset_step_3);
-  MENU_ITEM(gcode, "1-Calculate offset:", PSTR(""));
-  MENU_ITEM(gcode, "10 minus", PSTR(""));
-  MENU_ITEM(gcode, "z move value", PSTR(""));
-  MENU_ITEM(gcode, "plus 0.1", PSTR(""));
-  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "2-Set Z Probe", &zprobe_zoffset, -1.0, 0.0,Config_StoreSettings);
-  MENU_ITEM(submenu, "4-Main Menu", lcd_main_menu);
+  MENU_ITEM(function, "Set Z probe offset", set_z_probe_offset);
+//  MENU_ITEM(gcode, "1-Calculate offset:", PSTR(""));
+//  MENU_ITEM(gcode, "10 minus", PSTR(""));
+//  MENU_ITEM(gcode, "z move value", PSTR(""));
+//  MENU_ITEM(gcode, "plus 0.1", PSTR(""));
+//  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "2-Set Z Probe", &zprobe_zoffset, -1.0, 0.0,Config_StoreSettings);
+//  MENU_ITEM(submenu, "4-Main Menu", lcd_main_menu);
   END_MENU();
 }
 // bt ========== Z Move routines ===============

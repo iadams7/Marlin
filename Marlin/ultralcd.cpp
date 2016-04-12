@@ -57,7 +57,32 @@ static void lcd_status_screen();
   static void lcd_control_volumetric_menu();
 
 // bt ============================
-  static void lcd_z_offset_menu();
+  static void lcd_more_menu();
+  static void lcd_set_menu();
+  static void lcd_settings_menu();
+  static void execute_z_cal_gcodes();
+  static void lcd_calibrate_z_offset_menu();
+  static void lcd_calibrate_z_offset_step_2();
+  static void lcd_calibrate_z_offset_step_3();
+  static void lcd_calibrate_z_offset_step_4();
+  static void lcd_move_z_bt();
+  static void lcd_babystepping_menu();
+  static void lcd_set_z_probe_offset_menu();
+  static void lcd_nozzle_temp_menu();
+  static void execute_nozzle_temp_gcode_190();
+  static void execute_nozzle_temp_gcode_200();
+  static void execute_nozzle_temp_gcode_210();
+  static void execute_nozzle_temp_gcode_230();
+  static void execute_nozzle_temp_gcode_240();
+  static void lcd_bed_temp_menu();
+  static void execute_bed_temp_gcode_30();
+  static void execute_bed_temp_gcode_40();
+  static void execute_bed_temp_gcode_60();
+  static void execute_bed_temp_gcode_70();
+  static void execute_bed_temp_gcode_75();
+  static void lcd_set_feedrate_menu();
+  static void lcd_set_fan_speed_menu();
+  static void lcd_move_select_axis_bt();
 // bt ============================
 
   #if ENABLED(HAS_LCD_CONTRAST)
@@ -88,6 +113,9 @@ static void lcd_status_screen();
   static void menu_action_setting_edit_int3(const char* pstr, int* ptr, int minValue, int maxValue);
   static void menu_action_setting_edit_float3(const char* pstr, float* ptr, float minValue, float maxValue);
   static void menu_action_setting_edit_float32(const char* pstr, float* ptr, float minValue, float maxValue);
+  // bt ================
+  static void menu_action_setting_edit_float32bt(const char* pstr, float* ptr, float minValue, float maxValue);
+  // bt ================
   static void menu_action_setting_edit_float43(const char* pstr, float* ptr, float minValue, float maxValue);
   static void menu_action_setting_edit_float5(const char* pstr, float* ptr, float minValue, float maxValue);
   static void menu_action_setting_edit_float51(const char* pstr, float* ptr, float minValue, float maxValue);
@@ -97,6 +125,9 @@ static void lcd_status_screen();
   static void menu_action_setting_edit_callback_int3(const char* pstr, int* ptr, int minValue, int maxValue, menuFunc_t callbackFunc);
   static void menu_action_setting_edit_callback_float3(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
   static void menu_action_setting_edit_callback_float32(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
+  // bt ================
+  static void menu_action_setting_edit_callback_float32bt(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
+  // bt ================
   static void menu_action_setting_edit_callback_float43(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
   static void menu_action_setting_edit_callback_float5(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
   static void menu_action_setting_edit_callback_float51(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
@@ -159,10 +190,16 @@ static void lcd_status_screen();
    *     menu_action_function(lcd_sdcard_pause)
    *
    *   MENU_ITEM_EDIT(int3, MSG_SPEED, &feedrate_multiplier, 10, 999)
+   *   
    *   MENU_ITEM(setting_edit_int3, MSG_SPEED, PSTR(MSG_SPEED), &feedrate_multiplier, 10, 999)
    *     lcd_implementation_drawmenu_setting_edit_int3(sel, row, PSTR(MSG_SPEED), PSTR(MSG_SPEED), &feedrate_multiplier, 10, 999)
    *     menu_action_setting_edit_int3(PSTR(MSG_SPEED), &feedrate_multiplier, 10, 999)
    *
+   *    // bt ====== show additional examples =======
+   *    MENU_ITEM(submenu, MSG_MORE, lcd_more_menu);
+   *    
+   *    MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
+   *    // bt ============================
    */
   #define MENU_ITEM(type, label, args...) do { \
     if (_menuItemNr == _lineNr) { \
@@ -398,28 +435,95 @@ static void lcd_return_to_status() { lcd_goto_menu(lcd_status_screen); }
 
 /**
  *
- * "Main" menu
+ * "Main" main menu
  *
  */
 
+float zprobe_adj = 0;
+
+static void update_zprobe_zoffset() {
+  zprobe_zoffset = zprobe_zoffset + zprobe_adj;
+  zprobe_adj = 0;
+  Config_StoreSettings();
+}
 static void lcd_main_menu() {
   START_MENU();
-  MENU_ITEM(back, MSG_WATCH, lcd_status_screen);
-  if (movesplanned() || IS_SD_PRINTING) {
-    MENU_ITEM(submenu, MSG_TUNE, lcd_tune_menu);
+  // bt =========== 
+  //
+  // Back to Status menu - changed MSG added _NEW
+  //
+  // MENU_ITEM(back, MSG_BACK, lcd_status_screen);
+  MENU_ITEM(back, MSG_BACK, lcd_status_screen);
+  // bt =========== 
+
+// bt ============= remove movesplanned
+//  if (movesplanned() || IS_SD_PRINTING) {
+  if (IS_SD_PRINTING) {
+// bt =============
+
+
+    // bt =========== Change Menu
+ 
+    // BEGIN OLD MENU 
+    //
+    //    MENU_ITEM(submenu, MSG_TUNE, lcd_tune_menu);
+    //  }
+    //  else {
+    //    MENU_ITEM(submenu, MSG_PREPARE, lcd_prepare_menu);
+    //    #if ENABLED(DELTA_CALIBRATION_MENU)
+    //      MENU_ITEM(submenu, MSG_DELTA_CALIBRATE, lcd_delta_calibrate_menu);
+    //    #endif
+    //  }
+    //  MENU_ITEM(submenu, MSG_CONTROL, lcd_control_menu);
+    //
+    //  END OLD MENU
+    
+    //
+    // Flowrate
+    //
+    MENU_ITEM_EDIT(int3, MSG_FLOWRATE, &extruder_multiplier[0], 10, 999);
+    //
+    // Feedrate (speed)
+    //
+    MENU_ITEM_EDIT(int3, MSG_FEEDRATE, &feedrate_multiplier, 10, 999);
+    //
+    // More Menu 
+    //
+    MENU_ITEM(submenu, MSG_MORE, lcd_more_menu);
+    //
   }
   else {
-
-   // bt ===================
-   MENU_ITEM(submenu, MSG_Z_OFFSET_MENU, lcd_z_offset_menu);
-  // bt ===================
-  
-   MENU_ITEM(submenu, MSG_PREPARE, lcd_prepare_menu);
+    //
+    // Disable Steppers
+    //
+    MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
+    //
+    // Move Axis
+    //
+    MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_select_axis_bt);
+    //
+    // Home X and Y and Z
+    //
+    MENU_ITEM(gcode, MSG_HOME_X_Y_Z, PSTR("G28"));
+    //
+    // 1st Layer Adj.
+    //
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "Nozzle +up/-dn", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
+    //
+    // Set menu
+    //
+    MENU_ITEM(submenu, MSG_SET, lcd_set_menu);
+    //
+    // Settings menu
+    //
+    MENU_ITEM(submenu, MSG_SETTINGS, lcd_settings_menu);
+    
     #if ENABLED(DELTA_CALIBRATION_MENU)
-      MENU_ITEM(submenu, MSG_DELTA_CALIBRATE, lcd_delta_calibrate_menu);
+      //MENU_ITEM(submenu, MSG_DELTA_CALIBRATE, lcd_delta_calibrate_menu);
     #endif
   }
-  MENU_ITEM(submenu, MSG_CONTROL, lcd_control_menu);
+    
+    // bt =========== End Change Menu
 
   #if ENABLED(SDSUPPORT)
     if (card.cardOK) {
@@ -569,7 +673,7 @@ static void lcd_tune_menu() {
   //
   // ^ Main
   //
-  MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
 
   //
   // Speed:
@@ -673,7 +777,7 @@ void _lcd_preheat(int endnum, const float temph, const float tempb, const int fa
 
   static void lcd_preheat_pla_menu() {
     START_MENU();
-    MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
+    MENU_ITEM(back, MSG_BACK, lcd_prepare_menu);
     #if EXTRUDERS == 1
       MENU_ITEM(function, MSG_PREHEAT_PLA, lcd_preheat_pla0);
     #else
@@ -695,7 +799,7 @@ void _lcd_preheat(int endnum, const float temph, const float tempb, const int fa
 
   static void lcd_preheat_abs_menu() {
     START_MENU();
-    MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
+    MENU_ITEM(back, MSG_BACK, lcd_prepare_menu);
     #if EXTRUDERS == 1
       MENU_ITEM(function, MSG_PREHEAT_ABS, lcd_preheat_abs0);
     #else
@@ -723,33 +827,545 @@ void lcd_cooldown() {
   lcd_return_to_status();
 }
 
-// bt ======================
+// bt =========== add Sub Menus
 /**
  *
- * "Z Offset" submenu
+ * "Quick Set" submenu
  *
  */
 
-static void lcd_z_offset_menu() {
+static void lcd_set_menu() {
   START_MENU();
 
   //
   // ^ Main
   //
-  MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
   //
-  // Set Z offset ubmenu
+  // Nozzle Temp
   //
-  MENU_MULTIPLIER_ITEM_EDIT(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -10.00, 0.00);
+  MENU_ITEM(submenu, MSG_HOTEND_TEMP, lcd_nozzle_temp_menu);
   //
-  // Store EPROM settings
+  // Bed Temp
   //
-  MENU_ITEM(function, MSG_STORE_EPROM, Config_StoreSettings);
- 
+  MENU_ITEM(submenu, "(Bed Temp)", lcd_bed_temp_menu);
+  //
+  // Flowrate
+  //
+  MENU_ITEM_EDIT(int3, MSG_FLOWRATE, &extruder_multiplier[0], 10, 999);
+  //
+  // Feedrate (speed)
+  //
+  MENU_ITEM(submenu, MSG_FEEDRATE, lcd_set_feedrate_menu);
+  //
+  // Fan Speed
+  //
+  MENU_ITEM(submenu, MSG_FAN_SPEED_NEW, lcd_set_fan_speed_menu);
+  //
+  // Set Z Probe offset menu
+  //
+  MENU_ITEM(submenu, MSG_SET_Z_OFFSET, lcd_set_z_probe_offset_menu);
+
   END_MENU();
 }
-// bt =================
 
+/**
+ *
+ * "Set Z probe offset" submenu
+ *
+ */
+static void lcd_set_z_probe_offset_menu() {
+  START_MENU();
+
+  //
+  // ^ Quick set
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_set_menu);
+  //
+  // Set Z Probe offset
+  //
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, MSG_SET_Z_OFFSET, &zprobe_zoffset, -.99, .0,Config_StoreSettings);
+  MENU_ITEM(gcode, "-----------------------", PSTR(""));
+  MENU_ITEM(gcode, "  '-0.5 puts nozzle", PSTR(""));
+  MENU_ITEM(gcode, "   lower than '-0.1'", PSTR(""));
+  
+  END_MENU();
+}
+
+/**
+ *
+ * "Set Feedrate" submenu
+ *
+ */
+static void lcd_set_feedrate_menu() {
+  START_MENU();
+
+  //
+  // ^ Quick set
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_set_menu);
+  //
+  // Set Feedrate
+  //
+  MENU_ITEM_EDIT(int3, MSG_FEEDRATE, &feedrate_multiplier, 10, 999);
+  MENU_ITEM(gcode, "-----------------------", PSTR(""));
+  MENU_ITEM(gcode, "this does", PSTR(""));
+  MENU_ITEM(gcode, "not affect flowrate", PSTR(""));
+  
+  END_MENU();
+}
+
+/**
+ *
+ * "Set Fan Speed" submenu
+ *
+ */
+static void lcd_set_fan_speed_menu() {
+  START_MENU();
+
+  //
+  // ^ Quick set
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_set_menu);
+  //
+  // Set Fan Speed
+  //
+  MENU_ITEM_EDIT(int3, MSG_FAN_SPEED_NEW, &fanSpeed, 0, 255);
+  MENU_ITEM(gcode, "-----------------------", PSTR(""));
+  MENU_ITEM(gcode, "'255' is equivalent", PSTR(""));
+  MENU_ITEM(gcode, "to 100% here", PSTR(""));
+  
+  END_MENU();
+}
+
+/**
+ *
+ * "Nozzle Temp" submenu
+ *
+ */
+
+static void execute_nozzle_temp_gcode_190() {
+    enqueuecommands_P(PSTR("M104 S190"));
+    lcd_return_to_status();    
+}
+static void execute_nozzle_temp_gcode_200() {
+    enqueuecommands_P(PSTR("M104 S200"));
+    lcd_return_to_status();    
+}
+static void execute_nozzle_temp_gcode_210() {
+    enqueuecommands_P(PSTR("M104 S210"));
+    lcd_return_to_status();
+}
+static void execute_nozzle_temp_gcode_230() {
+    enqueuecommands_P(PSTR("M104 S230"));
+    lcd_return_to_status();
+}
+static void execute_nozzle_temp_gcode_240() {
+    enqueuecommands_P(PSTR("M104 S240"));
+    lcd_return_to_status();    
+}
+
+static void lcd_nozzle_temp_menu() {
+  START_MENU();
+
+  //
+  // ^ Set
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_set_menu);
+  //
+  // Nozzle Temp
+  //
+  //#if TEMP_SENSOR_0 != 0
+      MENU_ITEM(function, "190C", execute_nozzle_temp_gcode_190);
+      MENU_ITEM(function, "200C", execute_nozzle_temp_gcode_200);
+      MENU_ITEM(function, "210C", execute_nozzle_temp_gcode_210);
+      MENU_ITEM(function, "230C", execute_nozzle_temp_gcode_230);
+      MENU_ITEM(function, "240C", execute_nozzle_temp_gcode_240);
+  //#endif
+  
+  END_MENU();
+}
+
+/**
+ *
+ * "Bed Temp" submenu
+ *
+ */
+
+static void execute_bed_temp_gcode_30() {
+    enqueuecommands_P(PSTR("M140 S30"));
+    lcd_return_to_status();    
+}
+static void execute_bed_temp_gcode_40() {
+    enqueuecommands_P(PSTR("M140 S40"));
+    lcd_return_to_status();    
+}
+static void execute_bed_temp_gcode_60() {
+    enqueuecommands_P(PSTR("M140 S60"));
+    lcd_return_to_status();
+}
+static void execute_bed_temp_gcode_70() {
+    enqueuecommands_P(PSTR("M140 S70"));
+    lcd_return_to_status();
+}
+static void execute_bed_temp_gcode_75() {
+    enqueuecommands_P(PSTR("M140 S75"));
+    lcd_return_to_status();    
+}
+
+static void lcd_bed_temp_menu() {
+  START_MENU();
+
+  //
+  // ^ Set
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_set_menu);
+  //
+  // Bed Temp
+  //
+  //#if TEMP_SENSOR_0 != 0
+      MENU_ITEM(function, "30C", execute_bed_temp_gcode_30);
+      MENU_ITEM(function, "40C", execute_bed_temp_gcode_40);
+      MENU_ITEM(function, "60C", execute_bed_temp_gcode_60);
+      MENU_ITEM(function, "70C", execute_bed_temp_gcode_70);
+      MENU_ITEM(function, "75C", execute_bed_temp_gcode_75);
+  //#endif
+  
+  END_MENU();
+}
+
+/**
+ *
+ * "Calibrate Z Probe Offset (Step 1)" submenu
+ *
+ */
+static void lcd_calibrate_z_offset_menu() {
+  START_MENU();
+
+  //
+  // ^ Settings
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_settings_menu);
+  MENU_ITEM(gcode, "> z-cal.imade3d.com <", PSTR(""));
+  MENU_ITEM(gcode, "1-Slide a piece of", PSTR(""));
+  MENU_ITEM(gcode, "paper under nozzle", PSTR(""));
+  MENU_ITEM(gcode, "2-Twist Z motor by", PSTR(""));
+  MENU_ITEM(gcode, "hand until the paper", PSTR(""));
+  MENU_ITEM(gcode, "can't move easily.", PSTR(""));
+  MENU_ITEM(submenu, "3-Next Step", lcd_calibrate_z_offset_step_2);
+
+  END_MENU();
+}
+  
+/**
+ *
+ * "Calibrate Z Probe Offset (Step 2)" submenu
+ *
+ */
+static void execute_z_cal_gcodes() {
+    enqueuecommands_P(PSTR("M851 Z0\nG28\nG29\nG1 X50 Y30 F5000\nG1 Z0.0\nG92 Z10"));
+    lcd_goto_menu(lcd_calibrate_z_offset_step_3);    
+}
+
+static void lcd_calibrate_z_offset_step_2() {
+  START_MENU();
+
+  //
+  // ^ Step 1
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_calibrate_z_offset_menu);
+  MENU_ITEM(gcode, "1-Loosen proximity", PSTR(""));
+  MENU_ITEM(gcode, "sensor bracket.", PSTR(""));
+  MENU_ITEM(gcode, "2-Slide 4 in. zip tie", PSTR(""));
+  MENU_ITEM(gcode, "between sensor and", PSTR(""));
+  MENU_ITEM(gcode, "bed.", PSTR(""));
+  MENU_ITEM(gcode, "3-Retighten the", PSTR(""));
+  MENU_ITEM(gcode, "bracket.", PSTR(""));
+  MENU_ITEM(function, "4-Send calibrate codes", execute_z_cal_gcodes);
+  END_MENU();
+}
+
+/**
+ *
+ * "Calibrate Z Probe Offset (Step 3)" submenu
+ *
+ */
+static void lcd_calibrate_z_offset_step_3() {  
+  START_MENU();
+  //
+  // ^ Step 2
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_calibrate_z_offset_step_2);
+  MENU_ITEM(gcode, "1-Now slide paper", PSTR(""));
+  MENU_ITEM(gcode, "under nozzle", PSTR(""));
+  MENU_ITEM(gcode, "2-Use Z Move", PSTR(""));
+  MENU_ITEM(gcode, "until the paper", PSTR(""));
+  MENU_ITEM(gcode, "can't move easily.", PSTR(""));
+  MENU_ITEM(gcode, "easily.", PSTR(""));
+  MENU_ITEM(submenu,"Z Move", lcd_move_z_bt);
+  END_MENU();
+}
+
+/**
+ *
+ * "Calibrate Z Probe Offset (Step 4)" submenu
+ *
+ */
+static void set_z_probe_offset(){
+  zprobe_zoffset = -1 * (10 - current_position[Z_AXIS] + 0.1);
+  Config_StoreSettings();
+  lcd_goto_menu(lcd_main_menu);
+}
+
+static void lcd_calibrate_z_offset_step_4() {  
+  START_MENU();
+  //
+  // ^ Step 3
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_calibrate_z_offset_step_3);
+  MENU_ITEM(function, "Set Z probe offset", set_z_probe_offset);
+  END_MENU();
+}
+// bt ========== Z Move routines ===============
+
+/**
+ *
+ * "Move Z Axis" 
+ *
+ */
+inline void line_to_current_bt(AxisEnum axis) {
+    plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], manual_feedrate[axis]/60, active_extruder);
+}
+float move_menu_scale_z;
+
+static void _lcd_move_z_bt(const char* name, AxisEnum axis, int min, int max) {
+  if (encoderPosition != 0) {
+    move_menu_scale_z = 0.1;
+    refresh_cmd_timeout();
+    current_position[axis] += float((int)encoderPosition) * move_menu_scale_z;
+    if (min_software_endstops && current_position[axis] < min) current_position[axis] = min;
+    if (max_software_endstops && current_position[axis] > max) current_position[axis] = max;
+    encoderPosition = 0;
+    line_to_current_bt(axis);    //used by _lcd_move_bt and _lcd_move_z_bt and _lcd_move_e_bt
+    lcdDrawUpdate = 1;
+  }
+  if (lcdDrawUpdate) lcd_implementation_drawedit(name, ftostr31(current_position[axis]));
+  if (LCD_CLICKED) lcd_goto_menu(lcd_calibrate_z_offset_step_4,true);
+}
+static void lcd_move_z_bt() { 
+  _lcd_move_z_bt(PSTR(MSG_MOVE_Z), Z_AXIS, 9.0, 10.0); 
+}
+
+// bt2 ======== Move All Axis routines
+
+
+float move_menu_scale_bt;
+
+/**
+ *
+ * "Move _lcd_move_bt
+ *
+ */
+static void _lcd_move_bt(const char* name, AxisEnum axis, int min, int max) {
+  if (encoderPosition != 0) {
+    refresh_cmd_timeout();
+    current_position[axis] += float((int)encoderPosition) * move_menu_scale_bt;
+    if (min_software_endstops && current_position[axis] < min) current_position[axis] = min;
+    if (max_software_endstops && current_position[axis] > max) current_position[axis] = max;
+    encoderPosition = 0;
+    line_to_current_bt(axis);  //used by _lcd_move_bt and _lcd_move_z_bt and _lcd_move_e_bt
+    lcdDrawUpdate = 1;
+  }
+  if (lcdDrawUpdate) lcd_implementation_drawedit(name, ftostr31(current_position[axis]));
+  if (LCD_CLICKED) lcd_goto_menu(lcd_move_select_axis_bt,true);  
+}
+
+/**
+ *
+ * "Move _lcd_move_e_bt
+ *
+ */
+static void _lcd_move_e_bt(const char* name, AxisEnum axis) {
+  if (encoderPosition != 0) {
+    current_position[E_AXIS] += float((int)encoderPosition) * move_menu_scale_bt;
+    encoderPosition = 0;
+    line_to_current_bt(E_AXIS);   //used by _lcd_move_bt and _lcd_move_z_bt and _lcd_move_e_bt
+    lcdDrawUpdate = 1;
+  }
+
+  if (lcdDrawUpdate) lcd_implementation_drawedit(PSTR(MSG_MOVE_E), ftostr31(current_position[E_AXIS]));
+  if (LCD_CLICKED) lcd_goto_menu(lcd_move_select_axis_bt,true);
+  
+}
+
+/**
+ *
+ * "Move Select Axis" submenu
+ *
+ */
+static void lcd_move_x_10mm_bt() {
+  move_menu_scale_bt = 10.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_X), X_AXIS, X_MIN_POS, X_MAX_POS);
+}
+static void lcd_move_x_1mm_bt() {
+  move_menu_scale_bt = 1.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_X), X_AXIS, X_MIN_POS, X_MAX_POS);
+}
+static void lcd_move_x_01mm_bt() {
+  move_menu_scale_bt = 0.1;
+  _lcd_move_bt(PSTR(MSG_MOVE_X), X_AXIS, X_MIN_POS, X_MAX_POS);
+}
+static void lcd_move_y_10mm_bt() {
+  move_menu_scale_bt = 10.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_Y), Y_AXIS, Y_MIN_POS, Y_MAX_POS);
+}
+static void lcd_move_y_1mm_bt() {
+  move_menu_scale_bt = 1.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_Y), Y_AXIS, Y_MIN_POS, Y_MAX_POS);
+}
+static void lcd_move_y_01mm_bt() {
+  move_menu_scale_bt = 0.1;
+  _lcd_move_bt(PSTR(MSG_MOVE_Y), Y_AXIS, Y_MIN_POS, Y_MAX_POS);
+}
+static void lcd_move_z_1mm_bt() {
+  move_menu_scale_bt = 1.0;
+  _lcd_move_bt(PSTR(MSG_MOVE_Z), Z_AXIS, Z_MIN_POS, Z_MAX_POS);
+}
+static void lcd_move_z_01mm_bt() {
+  move_menu_scale_bt = 0.1;
+  _lcd_move_bt(PSTR(MSG_MOVE_Z), Z_AXIS, Z_MIN_POS, Z_MAX_POS);
+}
+static void lcd_move_e_10mm_bt() {
+  move_menu_scale_bt = 10.0;
+  _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS);
+}
+static void lcd_move_e_1mm_bt() {
+  move_menu_scale_bt = 1.0;
+  _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS);
+}
+static void lcd_move_e_01mm_bt() {
+  move_menu_scale_bt = 0.1;
+  _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS);
+}
+
+static void lcd_move_select_axis_bt() {
+  START_MENU();
+  //
+  // ^ Main
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
+
+//  MENU_ITEM(submenu,"Move X - 10mm", lcd_move_x_10mm_bt);
+  MENU_ITEM(submenu,"Move X", lcd_move_x_1mm_bt);
+//  MENU_ITEM(submenu,"Move X -  0.1mm", lcd_move_x_01mm_bt);
+//  MENU_ITEM(submenu,"Move Y - 10mm", lcd_move_y_10mm_bt);
+  MENU_ITEM(submenu,"Move Y", lcd_move_y_1mm_bt);
+//  MENU_ITEM(submenu,"Move Y -  0.1mm", lcd_move_y_01mm_bt);
+  MENU_ITEM(submenu,"Move Z", lcd_move_z_1mm_bt);
+//  MENU_ITEM(submenu,"Move Z -  0.1mm", lcd_move_z_01mm_bt);
+//  MENU_ITEM(submenu,"Move E - 10mm", lcd_move_e_10mm_bt);
+  MENU_ITEM(submenu,"Move E", lcd_move_e_1mm_bt);
+//  MENU_ITEM(submenu,"Move E -  0.1mm", lcd_move_e_01mm_bt);
+  
+  END_MENU();
+}
+
+/**
+ *
+ * "Settings" submenu
+ *
+ */
+static void lcd_settings_menu() {
+  START_MENU();
+
+  //
+  // ^ Main
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
+
+  //
+  // Calibrate Z Offset Menu
+  //
+  MENU_ITEM(submenu, MSG_CALIBRATE_Z_OFFSET, lcd_calibrate_z_offset_menu);
+  //
+  // Temperature
+  //
+  MENU_ITEM(submenu, MSG_TEMPERATURE, lcd_control_temperature_menu);
+  //
+  // Motion
+  // 
+  MENU_ITEM(submenu, MSG_MOTION, lcd_control_motion_menu);
+
+  END_MENU();
+}
+
+/**
+ *
+ * "More" submenu
+ *
+ */
+static void lcd_more_menu() {
+  START_MENU();
+  //
+  // ^ Main
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
+  //
+  // Hotend Temp
+  //
+  //#if TEMP_SENSOR_0 != 0
+      MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_HOTEND_TEMP, &target_temperature[0], 0, HEATER_0_MAXTEMP - 15);
+  //#endif
+  //
+  // Fan Speed
+  //
+  MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED_NEW, &fanSpeed, 0, 255);
+  //
+  // Change Filament
+  //
+  #if ENABLED(FILAMENTCHANGEENABLE)
+     MENU_ITEM(gcode, MSG_FILAMENTCHANGE_NEW, PSTR("M600"));
+  #endif
+  //
+  // Babystep Menu
+  //
+  MENU_ITEM(submenu, MSG_BABYSTEPPING, lcd_babystepping_menu);
+  
+  END_MENU();
+}
+
+/**
+ *
+ * "Babysteping Menu" submenu
+ *
+ */
+static void lcd_babystepping_menu() {
+  START_MENU();
+
+  //
+  // ^ More
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_more_menu);
+  // Babystep X:
+  // Babystep Y:
+  // Babystep Z:
+  //
+  #if ENABLED(BABYSTEPPING)
+    #if ENABLED(BABYSTEP_XY)
+      MENU_ITEM(submenu, MSG_BABYSTEP_X, lcd_babystep_x);
+      MENU_ITEM(submenu, MSG_BABYSTEP_Y, lcd_babystep_y);
+    #endif //BABYSTEP_XY
+    MENU_ITEM(submenu, "Babystep", lcd_babystep_z);
+    MENU_ITEM(gcode, "-----------------------", PSTR(""));
+    MENU_ITEM(gcode, "   <- lowers nozzle", PSTR(""));
+    MENU_ITEM(gcode, "   >- raises nozzle", PSTR(""));
+  #endif
+  
+  END_MENU();
+}
+
+
+// bt ===============
 
 
 /**
@@ -764,7 +1380,7 @@ static void lcd_prepare_menu() {
   //
   // ^ Main
   //
-  MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
 
   //
   // Auto Home
@@ -840,7 +1456,7 @@ static void lcd_prepare_menu() {
 
   static void lcd_delta_calibrate_menu() {
     START_MENU();
-    MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+    MENU_ITEM(back, MSG_BACK, lcd_main_menu);
     MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
     MENU_ITEM(gcode, MSG_DELTA_CALIBRATE_X, PSTR("G0 F8000 X-77.94 Y-45 Z0"));
     MENU_ITEM(gcode, MSG_DELTA_CALIBRATE_Y, PSTR("G0 F8000 X77.94 Y-45 Z0"));
@@ -866,6 +1482,7 @@ inline void line_to_current(AxisEnum axis) {
  *
  */
 
+// bt1
 float move_menu_scale;
 static void lcd_move_menu_axis();
 
@@ -943,7 +1560,7 @@ static void lcd_move_e(
 
 static void lcd_move_menu_axis() {
   START_MENU();
-  MENU_ITEM(back, MSG_MOVE_AXIS, lcd_move_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_move_menu);
   MENU_ITEM(submenu, MSG_MOVE_X, lcd_move_x);
   MENU_ITEM(submenu, MSG_MOVE_Y, lcd_move_y);
   if (move_menu_scale < 10.0) {
@@ -985,13 +1602,22 @@ static void lcd_move_menu_01mm() {
 
 static void lcd_move_menu() {
   START_MENU();
-  MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
+// bt ================== change Move menu return to Main
+//  MENU_ITEM(back, MSG_BACK, lcd_prepare_menu);
+  //
+  // ^ Main
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
+//
+// bt =====================
+  
   MENU_ITEM(submenu, MSG_MOVE_10MM, lcd_move_menu_10mm);
   MENU_ITEM(submenu, MSG_MOVE_1MM, lcd_move_menu_1mm);
   MENU_ITEM(submenu, MSG_MOVE_01MM, lcd_move_menu_01mm);
   //TODO:X,Y,Z,E
   END_MENU();
 }
+
 
 /**
  *
@@ -1001,7 +1627,7 @@ static void lcd_move_menu() {
 
 static void lcd_control_menu() {
   START_MENU();
-  MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
   MENU_ITEM(submenu, MSG_TEMPERATURE, lcd_control_temperature_menu);
   MENU_ITEM(submenu, MSG_MOTION, lcd_control_motion_menu);
   MENU_ITEM(submenu, MSG_VOLUMETRIC, lcd_control_volumetric_menu);
@@ -1066,10 +1692,14 @@ static void lcd_control_menu() {
 static void lcd_control_temperature_menu() {
   START_MENU();
 
+  // bt ===========change Control to Settings Sub menu
   //
-  // ^ Control
+  // Changed ^ Control to Settings submenu
   //
-  MENU_ITEM(back, MSG_CONTROL, lcd_control_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_settings_menu);
+  //MENU_ITEM(back, MSG_BACK, lcd_control_menu);
+  //
+  // bt ============================
 
   // Nozzle, Bed, and Fan Control
   nozzle_bed_fan_menu_items(encoderLine, _lineNr, _drawLineNr, _menuItemNr, wasClicked, itemSelected);
@@ -1142,7 +1772,7 @@ static void lcd_control_temperature_menu() {
  */
 static void lcd_control_temperature_preheat_pla_settings_menu() {
   START_MENU();
-  MENU_ITEM(back, MSG_TEMPERATURE, lcd_control_temperature_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_control_temperature_menu);
   MENU_ITEM_EDIT(int3, MSG_FAN_SPEED, &plaPreheatFanSpeed, 0, 255);
   #if TEMP_SENSOR_0 != 0
     MENU_ITEM_EDIT(int3, MSG_NOZZLE, &plaPreheatHotendTemp, HEATER_0_MINTEMP, HEATER_0_MAXTEMP - 15);
@@ -1163,7 +1793,7 @@ static void lcd_control_temperature_preheat_pla_settings_menu() {
  */
 static void lcd_control_temperature_preheat_abs_settings_menu() {
   START_MENU();
-  MENU_ITEM(back, MSG_TEMPERATURE, lcd_control_temperature_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_control_temperature_menu);
   MENU_ITEM_EDIT(int3, MSG_FAN_SPEED, &absPreheatFanSpeed, 0, 255);
   #if TEMP_SENSOR_0 != 0
     MENU_ITEM_EDIT(int3, MSG_NOZZLE, &absPreheatHotendTemp, HEATER_0_MINTEMP, HEATER_0_MAXTEMP - 15);
@@ -1184,9 +1814,20 @@ static void lcd_control_temperature_preheat_abs_settings_menu() {
  */
 static void lcd_control_motion_menu() {
   START_MENU();
-  MENU_ITEM(back, MSG_CONTROL, lcd_control_menu);
+
+  // bt =========================
+  //
+  // Changed Back to ^ Control to Settings submenu
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_settings_menu);
+  // MENU_ITEM(back, MSG_BACK, lcd_control_menu);
+  //
+  // bt =========================
+  
   #if ENABLED(AUTO_BED_LEVELING_FEATURE)
-    MENU_ITEM_EDIT(float32, MSG_ZPROBE_ZOFFSET, &zprobe_zoffset, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX);
+    // bt ====== removed
+    // MENU_ITEM_EDIT(float32, MSG_ZPROBE_ZOFFSET, &zprobe_zoffset, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX);
+    // bt =======
   #endif
   MENU_ITEM_EDIT(float5, MSG_ACC, &acceleration, 10, 99000);
   MENU_ITEM_EDIT(float3, MSG_VXY_JERK, &max_xy_jerk, 1, 990);
@@ -1225,7 +1866,7 @@ static void lcd_control_motion_menu() {
  */
 static void lcd_control_volumetric_menu() {
   START_MENU();
-  MENU_ITEM(back, MSG_CONTROL, lcd_control_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_control_menu);
 
   MENU_ITEM_EDIT_CALLBACK(bool, MSG_VOLUMETRIC_ENABLED, &volumetric_enabled, calculate_volumetric_multipliers);
 
@@ -1285,7 +1926,7 @@ static void lcd_control_volumetric_menu() {
 #if ENABLED(FWRETRACT)
   static void lcd_control_retract_menu() {
     START_MENU();
-    MENU_ITEM(back, MSG_CONTROL, lcd_control_menu);
+    MENU_ITEM(back, MSG_BACK, lcd_control_menu);
     MENU_ITEM_EDIT(bool, MSG_AUTORETRACT, &autoretract_enabled);
     MENU_ITEM_EDIT(float52, MSG_CONTROL_RETRACT, &retract_length, 0, 100);
     #if EXTRUDERS > 1
@@ -1325,7 +1966,7 @@ static void lcd_control_volumetric_menu() {
     if (lcdDrawUpdate == 0 && LCD_CLICKED == 0) return; // nothing to do (so don't thrash the SD card)
     uint16_t fileCnt = card.getnrfilenames();
     START_MENU();
-    MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+    MENU_ITEM(back, MSG_BACK, lcd_main_menu);
     card.getWorkDirName();
     if (card.filename[0] == '/') {
       #if !PIN_EXISTS(SD_DETECT)
@@ -1403,6 +2044,9 @@ static void lcd_control_volumetric_menu() {
 menu_edit_type(int, int3, itostr3, 1)
 menu_edit_type(float, float3, ftostr3, 1)
 menu_edit_type(float, float32, ftostr32, 100)
+  // bt ================
+menu_edit_type(float, float32bt, ftostr32bt, 100)
+  // bt ================
 menu_edit_type(float, float43, ftostr43, 1000)
 menu_edit_type(float, float5, ftostr5, 0.01)
 menu_edit_type(float, float51, ftostr51, 10)
@@ -1987,6 +2631,24 @@ char *ftostr32(const float& x) {
   conv[6] = 0;
   return conv;
 }
+
+// bt ===================
+// Convert float to string with -.45 format
+char *ftostr32bt(const float& x) {
+  long xx = x * 1000;
+  if (xx >= 0)
+    conv[0] = (xx / 1000) % 10 + '0';
+  else
+    conv[0] = '-';
+  xx = abs(xx);
+  conv[1] = '.';
+  conv[2] = (xx / 100) % 10 + '0';
+  conv[3] = (xx / 10) % 10 + '0';
+  conv[4] = (xx) % 10 ;
+  conv[5] = 0;
+  return conv;
+}
+// bt ===================
 
 // Convert float to string with 1.234 format
 char* ftostr43(const float& x) {

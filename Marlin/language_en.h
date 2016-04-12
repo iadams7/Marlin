@@ -17,14 +17,6 @@
   #define DISPLAY_CHARSET_ISO10646_1 // use the better font on full graphic displays.
 #endif
 
-// bt =====================
-#ifndef MSG_Z_OFFSET_MENU
-#define MSG_Z_OFFSET_MENU                       "Z Offset"
-#endif
-#ifndef MSG_SET_Z_OFFSET
-#define MSG_SET_Z_OFFSET                       "Set Z Offset"
-#endif
-// bt =====================
 
 #ifndef WELCOME_MSG
   #define WELCOME_MSG                         MACHINE_NAME " ready."
@@ -44,6 +36,70 @@
 #ifndef MSG_DISABLE_STEPPERS
   #define MSG_DISABLE_STEPPERS                "Disable steppers"
 #endif
+
+// bt ======== add new menu labels 
+#ifndef MSG_WELCOME_SCREEN
+#define MSG_WELCOME_SCREEN                  "IMade3D Welcomes You!"
+#endif
+#ifndef MSG_Z_OFFSET_MENU
+#define MSG_Z_OFFSET_MENU                       "Z probe offset"
+#endif
+#ifndef MSG_WATCH_NEW
+#define MSG_WATCH_NEW                       "Status"
+#endif
+#ifndef MSG_HOME_X_Y_Z
+#define MSG_HOME_X_Y_Z                      "Home X Y Z"
+#endif
+#ifndef MSG_SETTINGS
+#define MSG_SETTINGS                        "Settings"
+#endif
+#ifndef MSG_FLOWRATE
+#define MSG_FLOWRATE                        "Flowrate"
+#endif
+#ifndef MSG_FEEDRATE
+#define MSG_FEEDRATE                        "Feedrate (speed)"
+#endif
+#ifndef MSG_SET
+#define MSG_SET                             "Quick set"
+#endif
+#ifndef MSG_SET_Z_OFFSET
+#define MSG_SET_Z_OFFSET                     "Z probe offset"
+#endif
+#ifndef MSG_HOTEND_TEMP
+#define MSG_HOTEND_TEMP                     "Nozzle temp"
+#endif
+#ifndef MSG_FANSPEED
+#define MSG_FANSPEED                        "Fan speed"
+#endif
+#ifndef MSG_SETTINGS
+#define MSG_SETTINGS                        "Settings"
+#endif
+#ifndef MSG_CALIBRATE_Z_OFFSET
+#define MSG_CALIBRATE_Z_OFFSET              "Cal. Z probe offset"
+#endif
+#ifndef MSG_TEMPERATURE
+#define MSG_TEMPERATURE                     "Temperature"
+#endif
+#ifndef MSG_MOTION
+#define MSG_MOTION                          "Motion"
+#endif
+#ifndef MSG_MORE
+#define MSG_MORE                            "More"
+#endif
+#ifndef MSG_FAN_SPEED_NEW
+#define MSG_FAN_SPEED_NEW                   "Fan speed"
+#endif
+#ifndef MSG_FILAMENTCHANGE_NEW
+#define MSG_FILAMENTCHANGE_NEW              "Change filament"
+#endif
+#ifndef MSG_BACK
+#define MSG_BACK                            "Go back"
+#endif
+#ifndef MSG_BABYSTEPPING
+#define MSG_BABYSTEPPING                     "Babystepping"
+#endif
+// bt =========== 
+
 #ifndef MSG_AUTO_HOME
   #define MSG_AUTO_HOME                       "Auto home"
 #endif

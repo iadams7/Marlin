@@ -34,7 +34,11 @@
   #define MSG_AUTOSTART                       "Autostart"
 #endif
 #ifndef MSG_DISABLE_STEPPERS
-  #define MSG_DISABLE_STEPPERS                "Disable steppers"
+// bt ================
+//#define MSG_DISABLE_STEPPERS                "Disable Steppers"
+#define MSG_DISABLE_STEPPERS                "Unlock Motors"
+// bt ================
+
 #endif
 
 // bt ======== add new menu labels 
@@ -51,7 +55,7 @@
 #define MSG_HOME_X_Y_Z                      "Home X Y Z"
 #endif
 #ifndef MSG_SETTINGS
-#define MSG_SETTINGS                        "Settings"
+#define MSG_SETTINGS                        "Settings PIN"
 #endif
 #ifndef MSG_FLOWRATE
 #define MSG_FLOWRATE                        "Flowrate"
@@ -60,10 +64,16 @@
 #define MSG_FEEDRATE                        "Feedrate (speed)"
 #endif
 #ifndef MSG_SET
-#define MSG_SET                             "Quick set"
+// bt ================
+//#define MSG_SET                             "Quick set"
+#define MSG_SET                             "Adjust Other"
+// bt ================
 #endif
 #ifndef MSG_SET_Z_OFFSET
 #define MSG_SET_Z_OFFSET                     "Z probe offset"
+#endif
+#ifndef MSG_SET_XY_OFFSET
+#define MSG_SET_XY_OFFSET                     "X Y homing offsets"
 #endif
 #ifndef MSG_HOTEND_TEMP
 #define MSG_HOTEND_TEMP                     "Nozzle temp"
@@ -452,7 +462,7 @@
   #define MSG_CNG_SDCARD                      "Change SD card"
 #endif
 #ifndef MSG_ZPROBE_OUT
-  #define MSG_ZPROBE_OUT                      "Z probe out. bed"
+  #define MSG_ZPROBE_OUT                      "Z probe out"
 #endif
 #ifndef MSG_POSITION_UNKNOWN
   #define MSG_POSITION_UNKNOWN                "Home X/Y before Z"

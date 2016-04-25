@@ -480,6 +480,10 @@ static void lcd_main_menu() {
     //  END OLD MENU
     
     //
+    // 1st Layer Adj.
+    //
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer +/-", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
+    //
     // Flowrate
     //
     MENU_ITEM_EDIT(int3, MSG_FLOWRATE, &extruder_multiplier[0], 10, 999);

@@ -382,8 +382,8 @@
   #if TEMP_SENSOR_BED == -1
     #define BED_USES_AD595
   #elif TEMP_SENSOR_BED == 0
-    #undef BED_MINTEMP
-    #undef BED_MAXTEMP
+   #undef BED_MINTEMP
+   #undef BED_MAXTEMP
   #elif TEMP_SENSOR_BED > 0
     #define THERMISTORBED TEMP_SENSOR_BED
     #define BED_USES_THERMISTOR

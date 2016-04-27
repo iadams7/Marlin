@@ -97,7 +97,7 @@
 #define MSG_MORE                            "More"
 #endif
 #ifndef MSG_FAN_SPEED_NEW
-#define MSG_FAN_SPEED_NEW                   "Fan speed"
+#define MSG_FAN_SPEED_NEW                   "Fan speed %"
 #endif
 #ifndef MSG_FILAMENTCHANGE_NEW
 #define MSG_FILAMENTCHANGE_NEW              "Change filament"
@@ -234,7 +234,10 @@
   #define MSG_N4                              " 4"
 #endif
 #ifndef MSG_BED
-  #define MSG_BED                             "Bed"
+// bt =========
+  #define MSG_BED                             "Bed Temp"
+//#define MSG_BED                             "Bed"
+// bt =========
 #endif
 #ifndef MSG_FAN_SPEED
   #define MSG_FAN_SPEED                       "Fan speed"

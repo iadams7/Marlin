@@ -441,12 +441,28 @@ static void lcd_return_to_status() { lcd_goto_menu(lcd_status_screen); }
  */
 
 float zprobe_adj = 0;
+int fanSpeed100 = int((fanSpeed * 100)/255);
 
 static void update_zprobe_zoffset() {
   zprobe_zoffset = zprobe_zoffset + zprobe_adj;
   zprobe_adj = 0;
   Config_StoreSettings();
+  #if ENABLED(SDSUPPORT)
+    if (card.cardOK) {
+      if (card.isFileOpen()) {
+        if (card.sdprinting){
+          lcd_sdcard_stop();
+        }
+       }
+     }    
+  #endif
 }
+
+static void update_fan_speed() {
+  fanSpeed = int(((255 * fanSpeed100) /100)+0.5);
+  //Config_StoreSettings();
+}
+
 static void lcd_main_menu() {
   START_MENU();
   // bt =========== 
@@ -484,17 +500,18 @@ static void lcd_main_menu() {
     //
     MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer +/-", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
     //
-    // Flowrate
-    //
-    MENU_ITEM_EDIT(int3, MSG_FLOWRATE, &extruder_multiplier[0], 10, 999);
-    //
     // Feedrate (speed)
     //
     MENU_ITEM_EDIT(int3, MSG_FEEDRATE, &feedrate_multiplier, 10, 999);
     //
+    // Flowrate
+    //
+    MENU_ITEM_EDIT(int3, MSG_FLOWRATE, &extruder_multiplier[0], 10, 999);
+    //
     // Fan Speed
     //
-    MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED_NEW, &fanSpeed, 0, 255);
+    //MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED_NEW, &fanSpeed, 0, 255);
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_FAN_SPEED_NEW, &fanSpeed100, 0, 100,update_fan_speed);
     //
     // Nozzle Temp
     //
@@ -502,25 +519,25 @@ static void lcd_main_menu() {
     //
     // Bed Temp
     //
-    #if TEMP_SENSOR_BED != 0
+    //#if TEMP_SENSOR_BED != 0  bt ====== Commented out for testing
       MENU_ITEM(submenu, "Bed Temp", lcd_bed_temp_menu);
-    #endif
-  //
-  // Change Filament
-  //
-  #if ENABLED(FILAMENTCHANGEENABLE)
-     MENU_ITEM(gcode, MSG_FILAMENTCHANGE_NEW, PSTR("M600"));
-  #endif
-  
+    //#endif
     //
-    // More Menu 
+    // Change Filament
+    //
+    //#if ENABLED(FILAMENTCHANGEENABLE)  bt ====== Commented out for testing
+       MENU_ITEM(gcode, MSG_FILAMENTCHANGE_NEW, PSTR("M600"));
+    //#endif
+    
+    //
+    // More Menu  - Not used in latest menu bt 4-27-16
     //
     //MENU_ITEM(submenu, MSG_MORE, lcd_more_menu);
     //
   }
   else {
     //
-    // Disable Steppers  Now "Unlock Motors
+    // Disable Steppers  Now "Unlock Motors"  bt 4-27-16
     //
     MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
     //
@@ -534,9 +551,9 @@ static void lcd_main_menu() {
     //
     // Bed Temp
     //
-    #if TEMP_SENSOR_BED != 0
+    //#if TEMP_SENSOR_BED != 0  bt ====== Commented out for testing 
       MENU_ITEM(submenu, "Bed Temp", lcd_bed_temp_menu);
-    #endif
+    //#endif
     //
     // 1st Layer Adj.
     //
@@ -550,9 +567,9 @@ static void lcd_main_menu() {
     //
     MENU_ITEM(submenu, MSG_SETTINGS, lcd_settings_menu);
     
-    #if ENABLED(DELTA_CALIBRATION_MENU)
+    //#if ENABLED(DELTA_CALIBRATION_MENU)
       //MENU_ITEM(submenu, MSG_DELTA_CALIBRATE, lcd_delta_calibrate_menu);
-    #endif
+    //#endif
   }
     
     // bt =========== End Change Menu
@@ -690,7 +707,8 @@ static void nozzle_bed_fan_menu_items(uint8_t &encoderLine, uint8_t &_lineNr, ui
   //
   // Fan Speed:
   //
-  MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED, &fanSpeed, 0, 255);
+  //MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED, &fanSpeed, 0, 255);
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_FAN_SPEED_NEW, &fanSpeed100, 0, 100,update_fan_speed);
 }
 
 
@@ -908,7 +926,7 @@ static void lcd_set_z_probe_offset_menu() {
   //
   // ^ Quick set
   //
-  MENU_ITEM(back, MSG_BACK, lcd_set_menu);
+  MENU_ITEM(back, MSG_BACK, lcd_settings_menu);
   //
   // Set Z Probe offset
   //
@@ -1008,7 +1026,7 @@ static void lcd_nozzle_temp_menu() {
       MENU_ITEM(function, "200C", execute_nozzle_temp_gcode_200);
       MENU_ITEM(function, "210C", execute_nozzle_temp_gcode_210);
       MENU_ITEM(function, "220C", execute_nozzle_temp_gcode_220);
-      MENU_ITEM(function, "{value by knob}", execute_nozzle_temp_other);
+      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_NOZZLE, &target_temperature[0], 0, HEATER_0_MAXTEMP - 15, watch_temp_callback_E0);
   //#endif
   
   END_MENU();
@@ -1056,7 +1074,8 @@ static void lcd_bed_temp_menu() {
       MENU_ITEM(function, "40C", execute_bed_temp_gcode_40);
       MENU_ITEM(function, "60C", execute_bed_temp_gcode_60);
       MENU_ITEM(function, "70C", execute_bed_temp_gcode_70);
-      MENU_ITEM(function, "{value by knob}", execute_bed_temp_other);
+      MENU_ITEM_EDIT(int3, MSG_BED, &plaPreheatHPBTemp, 0, 95 - 15);
+      //MENU_ITEM_EDIT(int3, MSG_BED, &plaPreheatHPBTemp, BED_MINTEMP, BED_MAXTEMP - 15);
   //#endif
   
   END_MENU();
@@ -1217,7 +1236,7 @@ static void _lcd_move_e_bt(const char* name, AxisEnum axis) {
   if (encoderPosition != 0) {
     current_position[E_AXIS] += float((int)encoderPosition) * move_menu_scale_bt;
     encoderPosition = 0;
-    line_to_current_bt(E_AXIS);   //used by _lcd_move_bt and _lcd_move_z_bt and _lcd_move_e_bt
+    line_to_current_bt(E_AXIS);   //used by _lcd_move_e_bt
     lcdDrawUpdate = 1;
   }
 
@@ -1360,7 +1379,7 @@ static void lcd_settings_menu() {
 
 /**
  *
- * "More" submenu
+ * "More" submenu  bt ==== not used 4-27-16
  *
  */
 static void lcd_more_menu() {

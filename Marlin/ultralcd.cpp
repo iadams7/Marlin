@@ -441,7 +441,7 @@ static void lcd_return_to_status() { lcd_goto_menu(lcd_status_screen); }
  */
 
 float zprobe_adj = 0;
-int fanSpeed100 = int((fanSpeed * 100)/255);
+int fanSpeed100;
 
 static void update_zprobe_zoffset() {
   zprobe_zoffset = zprobe_zoffset + zprobe_adj;
@@ -462,10 +462,11 @@ static void update_zprobe_zoffset() {
 
 static void update_fan_speed() {
   fanSpeed = int(((255 * fanSpeed100) /100)+0.5);
-  //Config_StoreSettings();
+  Config_StoreSettings();
 }
 
 static void lcd_main_menu() {
+
   START_MENU();
   // bt =========== 
   //
@@ -479,7 +480,6 @@ static void lcd_main_menu() {
 //  if (movesplanned() || IS_SD_PRINTING) {
   if (IS_SD_PRINTING) {
 // bt =============
-
 
     // bt =========== Change Main Menu
  
@@ -512,7 +512,7 @@ static void lcd_main_menu() {
     //
     // Fan Speed
     //
-    //MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED_NEW, &fanSpeed, 0, 255);
+    fanSpeed100 = int((fanSpeed * 100)/255);
     MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_FAN_SPEED_NEW, &fanSpeed100, 0, 100,update_fan_speed);
     //
     // Nozzle Temp
@@ -714,8 +714,9 @@ static void nozzle_bed_fan_menu_items(uint8_t &encoderLine, uint8_t &_lineNr, ui
   //
   // Fan Speed:
   //
-  //MENU_MULTIPLIER_ITEM_EDIT(int3, MSG_FAN_SPEED, &fanSpeed, 0, 255);
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_FAN_SPEED_NEW, &fanSpeed100, 0, 100,update_fan_speed);
+  fanSpeed100 = int((fanSpeed * 100)/255);
+
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_FAN_SPEED_NEW, &fanSpeed100, 0, 100,update_fan_speed);
 }
 
 
@@ -906,10 +907,13 @@ static void lcd_set_menu() {
   // Flowrate
   //
   MENU_ITEM_EDIT(int3, MSG_FLOWRATE, &extruder_multiplier[0], 10, 999);
+
   //
   // Fan Speed
   //
-  MENU_ITEM(submenu, MSG_FAN_SPEED_NEW, lcd_set_fan_speed_menu);
+  fanSpeed100 = int((fanSpeed * 100)/255);
+
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_FAN_SPEED_NEW, &fanSpeed100, 0, 100,update_fan_speed);
   //
   // Move Axis
   //

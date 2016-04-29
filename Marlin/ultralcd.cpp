@@ -452,6 +452,8 @@ static void update_zprobe_zoffset() {
       if (card.isFileOpen()) {
         if (card.sdprinting){
           lcd_sdcard_pause();
+          delay(1000);
+          lcd_sdcard_resume();
         }
        }
      }    
@@ -526,8 +528,11 @@ static void lcd_main_menu() {
     // Change Filament
     //
     #if ENABLED(FILAMENTCHANGEENABLE)  
-    if (degHotend(active_extruder) >= extrude_min_temp) {
-  
+    if (degHotend(active_extruder) < extrude_min_temp) {
+       MENU_ITEM(gcode, "Change filament *cold", PSTR(""));
+    }
+    else
+    {
        MENU_ITEM(gcode, MSG_FILAMENTCHANGE_NEW, PSTR("M600"));
     }
     #endif

@@ -55,7 +55,7 @@
 #define MSG_HOME_X_Y_Z                      "Home X Y Z"
 #endif
 #ifndef MSG_SETTINGS
-#define MSG_SETTINGS                        "Settings PIN"
+#define MSG_SETTINGS                        "Settings"
 #endif
 #ifndef MSG_FLOWRATE
 #define MSG_FLOWRATE                        "Flowrate"
@@ -66,7 +66,7 @@
 #ifndef MSG_SET
 // bt ================
 //#define MSG_SET                             "Quick set"
-#define MSG_SET                             "Adjust Other"
+#define MSG_SET                             "Adjustments"
 // bt ================
 #endif
 #ifndef MSG_SET_Z_OFFSET

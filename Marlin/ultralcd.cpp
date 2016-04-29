@@ -444,20 +444,24 @@ float zprobe_adj = 0;
 int fanSpeed100;
 
 static void update_zprobe_zoffset() {
-  zprobe_zoffset = zprobe_zoffset + zprobe_adj;
-  zprobe_adj = 0;
-  Config_StoreSettings();
   #if ENABLED(SDSUPPORT)
     if (card.cardOK) {
       if (card.isFileOpen()) {
         if (card.sdprinting){
-          lcd_sdcard_pause();
-          delay(1000);
-          lcd_sdcard_resume();
+          lcd_sdcard_stop();
         }
        }
      }    
   #endif
+
+  enqueuecommands_P(PSTR("G28 X"));
+  delay(1000);
+  enqueuecommands_P(PSTR("G1 Y110"));
+  delay(1000);
+  zprobe_zoffset = zprobe_zoffset + zprobe_adj;
+  zprobe_adj = 0;
+  Config_StoreSettings();
+  //lcd_goto_menu(lcd_main_menu);    
 }
 
 static void update_fan_speed() {
@@ -902,7 +906,7 @@ static void lcd_set_menu() {
   //
   // Feedrate (speed)
   //
-  MENU_ITEM(submenu, MSG_FEEDRATE, lcd_set_feedrate_menu);
+  MENU_ITEM_EDIT(int3, MSG_FEEDRATE, &feedrate_multiplier, 10, 999);
   //
   // Flowrate
   //

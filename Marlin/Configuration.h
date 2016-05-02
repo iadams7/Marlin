@@ -610,7 +610,7 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 // default settings
 
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,1600,140}  ///LG JellyBox with ACME thread pitch 2mm and hobbeld gear from Caizls
-#define DEFAULT_MAX_FEEDRATE          {300, 300, 10, 30}    // (mm/sec) FG tested before was {300,300,5,25}
+#define DEFAULT_MAX_FEEDRATE          {300, 300, 10, 70}    // (mm/sec) FG tested before was {300,300,5,25}
 #define DEFAULT_MAX_ACCELERATION      {6000,6000,100,15000}    // X, Y, Z, E maximum start speed for accelerated moves.
 
 #define DEFAULT_ACCELERATION          4000    // X, Y, Z and E acceleration in mm/s^2 for printing moves FG increase

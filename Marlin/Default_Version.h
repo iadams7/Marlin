@@ -6,9 +6,9 @@
 // #error "You must specify the following parameters related to your distribution"
 
 #if true
-#define SHORT_BUILD_VERSION "JB Pre-Release RC3 Based"
-#define DETAILED_BUILD_VERSION "JB configured 1.1.0-RC3 From Archive"
-#define STRING_DISTRIBUTION_DATE "Feb 2016"
+#define SHORT_BUILD_VERSION "JB RC2"
+#define DETAILED_BUILD_VERSION "Marlin RC3 based; for IMADE3D Jellybox"
+#define STRING_DISTRIBUTION_DATE "May 2016"
 // It might also be appropriate to define a location where additional information can be found
 #define SOURCE_CODE_URL  "https://github.com/IMADE3D/Marlin"
 #endif

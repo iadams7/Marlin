@@ -34,7 +34,11 @@
   #define MSG_AUTOSTART                       "Autostart"
 #endif
 #ifndef MSG_DISABLE_STEPPERS
-  #define MSG_DISABLE_STEPPERS                "Disable steppers"
+// bt ================
+//#define MSG_DISABLE_STEPPERS                "Disable Steppers"
+#define MSG_DISABLE_STEPPERS                "Unlock Motors"
+// bt ================
+
 #endif
 
 // bt ======== add new menu labels 
@@ -60,10 +64,16 @@
 #define MSG_FEEDRATE                        "Feedrate (speed)"
 #endif
 #ifndef MSG_SET
-#define MSG_SET                             "Quick set"
+// bt ================
+//#define MSG_SET                             "Quick set"
+#define MSG_SET                             "Adjustments"
+// bt ================
 #endif
 #ifndef MSG_SET_Z_OFFSET
 #define MSG_SET_Z_OFFSET                     "Z probe offset"
+#endif
+#ifndef MSG_SET_XY_OFFSET
+#define MSG_SET_XY_OFFSET                     "X Y homing offsets"
 #endif
 #ifndef MSG_HOTEND_TEMP
 #define MSG_HOTEND_TEMP                     "Nozzle temp"
@@ -87,7 +97,7 @@
 #define MSG_MORE                            "More"
 #endif
 #ifndef MSG_FAN_SPEED_NEW
-#define MSG_FAN_SPEED_NEW                   "Fan speed"
+#define MSG_FAN_SPEED_NEW                   "Fan speed %"
 #endif
 #ifndef MSG_FILAMENTCHANGE_NEW
 #define MSG_FILAMENTCHANGE_NEW              "Change filament"
@@ -224,7 +234,10 @@
   #define MSG_N4                              " 4"
 #endif
 #ifndef MSG_BED
-  #define MSG_BED                             "Bed"
+// bt =========
+  #define MSG_BED                             "Bed Temp"
+//#define MSG_BED                             "Bed"
+// bt =========
 #endif
 #ifndef MSG_FAN_SPEED
   #define MSG_FAN_SPEED                       "Fan speed"
@@ -452,7 +465,7 @@
   #define MSG_CNG_SDCARD                      "Change SD card"
 #endif
 #ifndef MSG_ZPROBE_OUT
-  #define MSG_ZPROBE_OUT                      "Z probe out. bed"
+  #define MSG_ZPROBE_OUT                      "Z probe out"
 #endif
 #ifndef MSG_POSITION_UNKNOWN
   #define MSG_POSITION_UNKNOWN                "Home X/Y before Z"

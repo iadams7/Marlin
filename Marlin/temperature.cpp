@@ -476,8 +476,8 @@ void max_temp_error(uint8_t e) {
   _temp_error(e, PSTR(MSG_T_MAXTEMP), PSTR(MSG_ERR_MAXTEMP));
 }
 void min_temp_error(uint8_t e) {
- // bt ======= commented out next line on 1/14/2016 - to program menu ... needed to get rid of Err: MINTEMP
- // _temp_error(e, PSTR(MSG_T_MINTEMP), PSTR(MSG_ERR_MINTEMP));
+ // bt ======= commented out next line on 1/14/2016 - to program menu ... needed to get rid of Err: MINTEMP Uncomment 4/28/16
+ _temp_error(e, PSTR(MSG_T_MINTEMP), PSTR(MSG_ERR_MINTEMP));
  // bt ==========================================================
 }
 

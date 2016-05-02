@@ -77,7 +77,7 @@ Here are some standard links for getting your machine calibrated:
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
 //LG version shown after "ready" message
-#define CUSTOM_MACHINE_NAME "JB V 0.984"
+#define CUSTOM_MACHINE_NAME "JB V 0.985"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -190,7 +190,8 @@ Here are some standard links for getting your machine calibrated:
 #define HEATER_1_MAXTEMP 245
 #define HEATER_2_MAXTEMP 245
 #define HEATER_3_MAXTEMP 245
-#define BED_MAXTEMP 150
+// bt ====max to 95C  - per Filip -- Menu Calc = 95 - 15 = 80. Original value was 150
+#define BED_MAXTEMP 90
 
 // If you want the M105 heater power reported in watts, define the BED_WATTS, and (shared for all extruders) EXTRUDER_WATTS
 //#define EXTRUDER_WATTS (12.0*12.0/6.7) //  P=I^2/R

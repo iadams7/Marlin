@@ -47,7 +47,7 @@ Here are some standard links for getting your machine calibrated:
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
-#define STRING_CONFIG_H_AUTHOR "(none, default config)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "IMADE3D" // Who made the changes.
 #define SHOW_BOOTSCREEN
 #define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
 //LG  enabled Line2 - distribution date
@@ -77,7 +77,7 @@ Here are some standard links for getting your machine calibrated:
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
 //LG version shown after "ready" message; FG edited
-#define CUSTOM_MACHINE_NAME "Jellybox"
+#define CUSTOM_MACHINE_NAME "Jellybox is"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -605,7 +605,7 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
  */
 
 //FG increase all...
-#define HOMING_FEEDRATE {60*60, 60*60, 8*60, 0}  // set the homing speeds (mm/min)
+#define HOMING_FEEDRATE {60*60, 60*60, 7*60, 0}  // set the homing speeds (mm/min)
 
 // default settings
 
@@ -613,8 +613,8 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 #define DEFAULT_MAX_FEEDRATE          {300, 300, 10, 70}    // (mm/sec) FG tested before was {300,300,5,25}
 #define DEFAULT_MAX_ACCELERATION      {6000,6000,100,15000}    // X, Y, Z, E maximum start speed for accelerated moves.
 
-#define DEFAULT_ACCELERATION          4000    // X, Y, Z and E acceleration in mm/s^2 for printing moves FG increase
-#define DEFAULT_RETRACT_ACCELERATION  4000    // E acceleration in mm/s^2 for retracts
+#define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration in mm/s^2 for printing moves FG increase
+#define DEFAULT_RETRACT_ACCELERATION  5000    // E acceleration in mm/s^2 for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   4000    // X, Y, Z acceleration in mm/s^2 for travel (non printing) moves
 
 // The speed change that does not require acceleration (i.e. the software might assume it can be done instantaneously)

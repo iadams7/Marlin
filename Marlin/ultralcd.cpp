@@ -444,20 +444,22 @@ float zprobe_adj = 0;
 int fanSpeed100;
 
 static void update_zprobe_zoffset() {
-  #if ENABLED(SDSUPPORT)
-    if (card.cardOK) {
-      if (card.isFileOpen()) {
-        if (card.sdprinting){
-          lcd_sdcard_stop();
-        }
-       }
-     }    
-  #endif
+  
+// bt ==== commented out following until we decide final procedure 5/4/16
+//  #if ENABLED(SDSUPPORT)
+//    if (card.cardOK) {
+//      if (card.isFileOpen()) {
+//        if (card.sdprinting){
+//          lcd_sdcard_stop();
+//        }
+//       }
+//     }    
+//  #endif
 
-  enqueuecommands_P(PSTR("G28 X"));
-  delay(1000);
-  enqueuecommands_P(PSTR("G1 Y110"));
-  delay(1000);
+//  enqueuecommands_P(PSTR("G28 X"));
+//  delay(1000);
+//  enqueuecommands_P(PSTR("G1 Y110"));
+//  delay(1000);
   zprobe_zoffset = zprobe_zoffset + zprobe_adj;
   zprobe_adj = 0;
   Config_StoreSettings();
@@ -504,7 +506,8 @@ static void lcd_main_menu() {
     //
     // 1st Layer Adj.
     //
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer +/-", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
+    // bt ==== commented out following until we decide final procedure 5/4/16
+    //MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer -/+", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
     //
     // Feedrate (speed)
     //
@@ -568,7 +571,7 @@ static void lcd_main_menu() {
     //
     // 1st Layer Adj.
     //
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer +/-", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer -/+", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
     //
     // Set menu
     //
@@ -945,7 +948,7 @@ static void lcd_set_z_probe_offset_menu() {
   //
   // Set Z Probe offset
   //
-  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, MSG_SET_Z_OFFSET, &zprobe_zoffset, -.99, .0,Config_StoreSettings);
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, MSG_SET_Z_OFFSET, &zprobe_zoffset, -20.00, .0,Config_StoreSettings);
   MENU_ITEM(gcode, "-----------------------", PSTR(""));
   MENU_ITEM(gcode, "  '-0.5 puts nozzle", PSTR(""));
   MENU_ITEM(gcode, "   lower than '-0.1'", PSTR(""));

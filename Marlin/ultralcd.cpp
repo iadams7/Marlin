@@ -1217,6 +1217,10 @@ static void lcd_home_axes() {
   // Home Y
   //
   MENU_ITEM(gcode, "Home Y", PSTR("G28 Y"));
+    //
+    // Home X and Y and Z
+    //
+    MENU_ITEM(gcode, MSG_HOME_X_Y_Z, PSTR("G28"));
   
   END_MENU();
 }

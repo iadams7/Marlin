@@ -415,7 +415,7 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 #define Z_MIN_POS 0
 #define X_MAX_POS 176 // bed starts at 10mm from X_MIN_POS  (0 after X homing. It is important that nozzle is out of bed after homing).
 #define Y_MAX_POS 166
-#define Z_MAX_POS 131
+#define Z_MAX_POS 151
 
 //===========================================================================
 //========================= Filament Runout Sensor ==========================

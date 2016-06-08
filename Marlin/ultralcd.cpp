@@ -84,6 +84,7 @@ static void lcd_status_screen();
   static void lcd_set_fan_speed_menu();
   static void lcd_move_select_axis_bt();
   static void lcd_move_select_axis_e_bt();
+  static void lcd_home_axes();
 // bt ============================
 
   #if ENABLED(HAS_LCD_CONTRAST)
@@ -922,25 +923,21 @@ static void lcd_set_menu() {
 
   MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_FAN_SPEED_NEW, &fanSpeed100, 0, 100,update_fan_speed);
   //
-  // Move Axis
-  //
-  MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_select_axis_bt);
-  //
-  // 
+  // Extrude/Retract
   //
   MENU_ITEM(submenu, "Extrude/Retract", lcd_move_select_axis_e_bt);
   //
-  // Home X
+  // Test Auto Bed Level
   //
-  MENU_ITEM(gcode, "Home X", PSTR("G28 X"));
+  MENU_ITEM(gcode, "Test Auto Bed Level", PSTR("G28\nG29"));
   //
-  // Home T
+  // Home Axes
   //
-  MENU_ITEM(gcode, "Home Y", PSTR("G28 Y"));
+  MENU_ITEM(submenu, "Home Axes", lcd_home_axes);
   //
-  // Home X and Y and Z
+  // Move Axis
   //
-  MENU_ITEM(gcode, "Level bed", PSTR("G29"));
+  MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_select_axis_bt);
 
   END_MENU();
 }
@@ -1203,6 +1200,31 @@ static void lcd_calibrate_z_offset_step_4() {
   MENU_ITEM(function, "Set Z probe offset", set_z_probe_offset);
   END_MENU();
 }
+
+//bt Home Axes
+
+static void lcd_home_axes() {
+  START_MENU();
+  //
+  // ^ Set
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_set_menu);
+  //
+  // Home X
+  //
+  MENU_ITEM(gcode, "Home X", PSTR("G28 X"));
+  //
+  // Home Y
+  //
+  MENU_ITEM(gcode, "Home Y", PSTR("G28 Y"));
+  
+  END_MENU();
+}
+
+
+
+
+
 // bt ========== Z Move routines ===============
 
 /**
@@ -1409,7 +1431,7 @@ static void lcd_settings_menu() {
   //
   // Test Nozzle Cleaning
   //
-  MENU_ITEM(gcode, "Test nozzle cleaning", PSTR(""));
+  //  MENU_ITEM(gcode, "Test nozzle cleaning", PSTR(""));
 
   //
   // Temperature

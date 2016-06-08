@@ -895,7 +895,7 @@ void lcd_cooldown() {
 // bt =========== add Sub Menus
 /**
  *
- * "Quick Set" submenu,  Renamed to "Adjust Other" 
+ * "Quick Set" submenu,  Renamed to "Adjustments" 
  *
  */
 
@@ -926,9 +926,21 @@ static void lcd_set_menu() {
   //
   MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_select_axis_bt);
   //
-  // Extrude/Retract
+  // 
   //
   MENU_ITEM(submenu, "Extrude/Retract", lcd_move_select_axis_e_bt);
+  //
+  // Home X
+  //
+  MENU_ITEM(gcode, "Home X", PSTR("G28 X"));
+  //
+  // Home T
+  //
+  MENU_ITEM(gcode, "Home Y", PSTR("G28 Y"));
+  //
+  // Home X and Y and Z
+  //
+  MENU_ITEM(gcode, "Level bed", PSTR("G29"));
 
   END_MENU();
 }

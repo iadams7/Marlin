@@ -948,7 +948,7 @@ static void lcd_set_z_probe_offset_menu() {
   //
   // Set Z Probe offset
   //
-  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, MSG_SET_Z_OFFSET, &zprobe_zoffset, -20.00, .0,Config_StoreSettings);
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -6.00, .0,Config_StoreSettings);
   MENU_ITEM(gcode, "-----------------------", PSTR(""));
   MENU_ITEM(gcode, "  '-0.5 puts nozzle", PSTR(""));
   MENU_ITEM(gcode, "   lower than '-0.1'", PSTR(""));
@@ -1303,13 +1303,13 @@ static void lcd_move_z_01mm_bt() {
   _lcd_move_bt(PSTR(MSG_MOVE_Z), Z_AXIS, Z_MIN_POS, Z_MAX_POS);
 }
 static void lcd_move_e_05mm_bt() {
+  _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 0.5);
+}
+static void lcd_move_e_5mm_bt() {
   _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 5);
 }
 static void lcd_move_e_10mm_bt() {
   _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 10);
-}
-static void lcd_move_e_20mm_bt() {
-  _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 20);
 }
 static void lcd_move_e_50mm_bt() {
   _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 50);
@@ -1361,9 +1361,9 @@ static void lcd_move_select_axis_e_bt() {
     // ^ Set
     //
     MENU_ITEM(back, MSG_BACK, lcd_set_menu);
-    MENU_ITEM(function,"Extrude -  5mm", lcd_move_e_05mm_bt);
+    MENU_ITEM(function,"Extrude -0.5mm", lcd_move_e_05mm_bt);
+    MENU_ITEM(function,"Extrude -  5mm", lcd_move_e_5mm_bt);
     MENU_ITEM(function,"Extrude - 10mm", lcd_move_e_10mm_bt);
-    MENU_ITEM(function,"Extrude - 20mm", lcd_move_e_20mm_bt);
     MENU_ITEM(function,"Extrude - 50mm", lcd_move_e_50mm_bt);
     MENU_ITEM(function,"Extrude -100mm", lcd_move_e_100mm_bt);
      

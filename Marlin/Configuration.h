@@ -47,7 +47,7 @@ Here are some standard links for getting your machine calibrated:
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
-#define STRING_CONFIG_H_AUTHOR "(none, default config)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "IMADE3D" // Who made the changes.
 #define SHOW_BOOTSCREEN
 #define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
 //LG  enabled Line2 - distribution date
@@ -77,7 +77,7 @@ Here are some standard links for getting your machine calibrated:
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
 //LG version shown after "ready" message; FG edited
-#define CUSTOM_MACHINE_NAME "Jellybox"
+#define CUSTOM_MACHINE_NAME "Jellybox is"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -150,12 +150,13 @@ Here are some standard links for getting your machine calibrated:
 //#define DUMMY_THERMISTOR_998_VALUE 25
 //#define DUMMY_THERMISTOR_999_VALUE 100
 // :{ '0': "Not used", '4': "10k !! do not use for a hotend. Bad resolution at high temp. !!", '1': "100k / 4.7k - EPCOS", '51': "100k / 1k - EPCOS", '6': "100k / 4.7k EPCOS - Not as accurate as Table 1", '5': "100K / 4.7k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '7': "100k / 4.7k Honeywell 135-104LAG-J01", '71': "100k / 4.7k Honeywell 135-104LAF-J01", '8': "100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT", '9': "100k / 4.7k GE Sensing AL03006-58.2K-97-G1", '10': "100k / 4.7k RS 198-961", '11': "100k / 4.7k beta 3950 1%", '12': "100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT (calibrated for Makibox hot bed)", '13': "100k Hisens 3950  1% up to 300°C for hotend 'Simple ONE ' & hotend 'All In ONE'", '60': "100k Maker's Tool Works Kapton Bed Thermistor beta=3950", '55': "100k / 1k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '2': "200k / 4.7k - ATC Semitec 204GT-2", '52': "200k / 1k - ATC Semitec 204GT-2", '-2': "Thermocouple + MAX6675 (only for sensor 0)", '-1': "Thermocouple + AD595", '3': "Mendel-parts / 4.7k", '1047': "Pt1000 / 4.7k", '1010': "Pt1000 / 1k (non standard)", '20': "PT100 (Ultimainboard V2.x)", '147': "Pt100 / 4.7k", '110': "Pt100 / 1k (non-standard)", '998': "Dummy 1", '999': "Dummy 2" }
-#define TEMP_SENSOR_0 1
+//FG changed to 5 as per e3d instructions; note than before it was "1" for V5 IM3D extruders
+#define TEMP_SENSOR_0 5
 
 //LG changed SENSOR_1 and SENSOR_2 to type 1 - 100k
-#define TEMP_SENSOR_1 1
-#define TEMP_SENSOR_2 1
-#define TEMP_SENSOR_3 0
+//#define TEMP_SENSOR_1 1
+//#define TEMP_SENSOR_2 1
+//#define TEMP_SENSOR_3 0
 
 //LG disabled bed temperature sensor.
 //#define TEMP_SENSOR_BED 0
@@ -414,7 +415,7 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 #define Z_MIN_POS 0
 #define X_MAX_POS 176 // bed starts at 10mm from X_MIN_POS  (0 after X homing. It is important that nozzle is out of bed after homing).
 #define Y_MAX_POS 166
-#define Z_MAX_POS 131
+#define Z_MAX_POS 147 //experimentally determined in June 2016, fg
 
 //===========================================================================
 //========================= Filament Runout Sensor ==========================
@@ -605,16 +606,16 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
  */
 
 //FG increase all...
-#define HOMING_FEEDRATE {60*60, 60*60, 8*60, 0}  // set the homing speeds (mm/min)
+#define HOMING_FEEDRATE {60*60, 60*60, 7*60, 0}  // set the homing speeds (mm/min)
 
 // default settings
 
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,1600,140}  ///LG JellyBox with ACME thread pitch 2mm and hobbeld gear from Caizls
-#define DEFAULT_MAX_FEEDRATE          {300, 300, 10, 30}    // (mm/sec) FG tested before was {300,300,5,25}
+#define DEFAULT_MAX_FEEDRATE          {300, 300, 10, 70}    // (mm/sec) FG tested before was {300,300,5,25}
 #define DEFAULT_MAX_ACCELERATION      {6000,6000,100,15000}    // X, Y, Z, E maximum start speed for accelerated moves.
 
-#define DEFAULT_ACCELERATION          4000    // X, Y, Z and E acceleration in mm/s^2 for printing moves FG increase
-#define DEFAULT_RETRACT_ACCELERATION  4000    // E acceleration in mm/s^2 for retracts
+#define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration in mm/s^2 for printing moves FG increase
+#define DEFAULT_RETRACT_ACCELERATION  5000    // E acceleration in mm/s^2 for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   4000    // X, Y, Z acceleration in mm/s^2 for travel (non printing) moves
 
 // The speed change that does not require acceleration (i.e. the software might assume it can be done instantaneously)

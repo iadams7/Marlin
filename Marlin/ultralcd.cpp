@@ -84,6 +84,7 @@ static void lcd_status_screen();
   static void lcd_set_fan_speed_menu();
   static void lcd_move_select_axis_bt();
   static void lcd_move_select_axis_e_bt();
+  static void lcd_home_axes();
 // bt ============================
 
   #if ENABLED(HAS_LCD_CONTRAST)
@@ -444,20 +445,22 @@ float zprobe_adj = 0;
 int fanSpeed100;
 
 static void update_zprobe_zoffset() {
-  #if ENABLED(SDSUPPORT)
-    if (card.cardOK) {
-      if (card.isFileOpen()) {
-        if (card.sdprinting){
-          lcd_sdcard_stop();
-        }
-       }
-     }    
-  #endif
+  
+// bt ==== commented out following until we decide final procedure 5/4/16
+//  #if ENABLED(SDSUPPORT)
+//    if (card.cardOK) {
+//      if (card.isFileOpen()) {
+//        if (card.sdprinting){
+//          lcd_sdcard_stop();
+//        }
+//       }
+//     }    
+//  #endif
 
-  enqueuecommands_P(PSTR("G28 X"));
-  delay(1000);
-  enqueuecommands_P(PSTR("G1 Y110"));
-  delay(1000);
+//  enqueuecommands_P(PSTR("G28 X"));
+//  delay(1000);
+//  enqueuecommands_P(PSTR("G1 Y110"));
+//  delay(1000);
   zprobe_zoffset = zprobe_zoffset + zprobe_adj;
   zprobe_adj = 0;
   Config_StoreSettings();
@@ -504,7 +507,8 @@ static void lcd_main_menu() {
     //
     // 1st Layer Adj.
     //
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer +/-", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
+    // bt ==== commented out following until we decide final procedure 5/4/16
+    //MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer -/+", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
     //
     // Feedrate (speed)
     //
@@ -568,7 +572,7 @@ static void lcd_main_menu() {
     //
     // 1st Layer Adj.
     //
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer +/-", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
+    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer -/+", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
     //
     // Set menu
     //
@@ -892,7 +896,7 @@ void lcd_cooldown() {
 // bt =========== add Sub Menus
 /**
  *
- * "Quick Set" submenu,  Renamed to "Adjust Other" 
+ * "Quick Set" submenu,  Renamed to "Adjustments" 
  *
  */
 
@@ -919,13 +923,21 @@ static void lcd_set_menu() {
 
   MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(int3, MSG_FAN_SPEED_NEW, &fanSpeed100, 0, 100,update_fan_speed);
   //
-  // Move Axis
-  //
-  MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_select_axis_bt);
-  //
   // Extrude/Retract
   //
   MENU_ITEM(submenu, "Extrude/Retract", lcd_move_select_axis_e_bt);
+  //
+  // Test Auto Bed Level
+  //
+  MENU_ITEM(gcode, "Test Auto Bed Level", PSTR("G28\nG29"));
+  //
+  // Home Axes
+  //
+  MENU_ITEM(submenu, "Home Axes", lcd_home_axes);
+  //
+  // Move Axis
+  //
+  MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_select_axis_bt);
 
   END_MENU();
 }
@@ -945,7 +957,7 @@ static void lcd_set_z_probe_offset_menu() {
   //
   // Set Z Probe offset
   //
-  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, MSG_SET_Z_OFFSET, &zprobe_zoffset, -.99, .0,Config_StoreSettings);
+  MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32, MSG_SET_Z_OFFSET, &zprobe_zoffset, -6.00, .0,Config_StoreSettings);
   MENU_ITEM(gcode, "-----------------------", PSTR(""));
   MENU_ITEM(gcode, "  '-0.5 puts nozzle", PSTR(""));
   MENU_ITEM(gcode, "   lower than '-0.1'", PSTR(""));
@@ -1188,6 +1200,35 @@ static void lcd_calibrate_z_offset_step_4() {
   MENU_ITEM(function, "Set Z probe offset", set_z_probe_offset);
   END_MENU();
 }
+
+//bt Home Axes
+
+static void lcd_home_axes() {
+  START_MENU();
+  //
+  // ^ Set
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_set_menu);
+  //
+  // Home X
+  //
+  MENU_ITEM(gcode, "Home X", PSTR("G28 X"));
+  //
+  // Home Y
+  //
+  MENU_ITEM(gcode, "Home Y", PSTR("G28 Y"));
+    //
+    // Home X and Y and Z
+    //
+    MENU_ITEM(gcode, MSG_HOME_X_Y_Z, PSTR("G28"));
+  
+  END_MENU();
+}
+
+
+
+
+
 // bt ========== Z Move routines ===============
 
 /**
@@ -1300,13 +1341,13 @@ static void lcd_move_z_01mm_bt() {
   _lcd_move_bt(PSTR(MSG_MOVE_Z), Z_AXIS, Z_MIN_POS, Z_MAX_POS);
 }
 static void lcd_move_e_05mm_bt() {
+  _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 0.5);
+}
+static void lcd_move_e_5mm_bt() {
   _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 5);
 }
 static void lcd_move_e_10mm_bt() {
   _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 10);
-}
-static void lcd_move_e_20mm_bt() {
-  _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 20);
 }
 static void lcd_move_e_50mm_bt() {
   _lcd_move_e_bt(PSTR(MSG_MOVE_E), E_AXIS, 50);
@@ -1358,9 +1399,9 @@ static void lcd_move_select_axis_e_bt() {
     // ^ Set
     //
     MENU_ITEM(back, MSG_BACK, lcd_set_menu);
-    MENU_ITEM(function,"Extrude -  5mm", lcd_move_e_05mm_bt);
+    MENU_ITEM(function,"Extrude -0.5mm", lcd_move_e_05mm_bt);
+    MENU_ITEM(function,"Extrude -  5mm", lcd_move_e_5mm_bt);
     MENU_ITEM(function,"Extrude - 10mm", lcd_move_e_10mm_bt);
-    MENU_ITEM(function,"Extrude - 20mm", lcd_move_e_20mm_bt);
     MENU_ITEM(function,"Extrude - 50mm", lcd_move_e_50mm_bt);
     MENU_ITEM(function,"Extrude -100mm", lcd_move_e_100mm_bt);
      
@@ -1394,7 +1435,7 @@ static void lcd_settings_menu() {
   //
   // Test Nozzle Cleaning
   //
-  MENU_ITEM(gcode, "Test nozzle cleaning", PSTR(""));
+  //  MENU_ITEM(gcode, "Test nozzle cleaning", PSTR(""));
 
   //
   // Temperature

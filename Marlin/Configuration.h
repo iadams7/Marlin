@@ -4,6 +4,10 @@
 #include "boards.h"
 #include "macros.h"
 
+#define marlin_base_ver "Marlin Ver: RC3"
+#define jellybox_software_ver "JB Softw: 1.05 7-16"
+#define jellybox_hardware_ver "JB Hardw: 1.13"
+
 //===========================================================================
 //============================= Getting Started =============================
 //===========================================================================
@@ -50,7 +54,7 @@ Here are some standard links for getting your machine calibrated:
 #define STRING_CONFIG_H_AUTHOR "IMADE3D" // Who made the changes.
 #define SHOW_BOOTSCREEN
 #define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
-//LG  enabled Line2 - distribution date
+//  enabled Line2 - distribution date
 #define STRING_SPLASH_LINE2 STRING_DISTRIBUTION_DATE // will be shown during bootup in line 2
 
 // @section machine
@@ -159,7 +163,8 @@ Here are some standard links for getting your machine calibrated:
 //#define TEMP_SENSOR_3 0
 
 //LG disabled bed temperature sensor.
-//#define TEMP_SENSOR_BED 0
+//LG7/18 Bed temperature sensor allowed again and set to 1​
+#define TEMP_SENSOR_BED 0
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
@@ -192,7 +197,10 @@ Here are some standard links for getting your machine calibrated:
 #define HEATER_2_MAXTEMP 245
 #define HEATER_3_MAXTEMP 245
 // bt ====max to 95C  - per Filip -- Menu Calc = 95 - 15 = 80. Original value was 150
-#define BED_MAXTEMP 90
+//LG7/18 max temperature of the bed set to 75C but then changed to 80,
+//because when heating - it goes toomuch over required temperature,
+//that is stops on MAXTEMPERATURE ERROR
+#define BED_MAXTEMP 80
 
 // If you want the M105 heater power reported in watts, define the BED_WATTS, and (shared for all extruders) EXTRUDER_WATTS
 //#define EXTRUDER_WATTS (12.0*12.0/6.7) //  P=I^2/R

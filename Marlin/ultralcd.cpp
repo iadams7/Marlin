@@ -85,6 +85,7 @@ static void lcd_status_screen();
   static void lcd_move_select_axis_bt();
   static void lcd_move_select_axis_e_bt();
   static void lcd_home_axes();
+  static void lcd_about();
 // bt ============================
 
   #if ENABLED(HAS_LCD_CONTRAST)
@@ -461,7 +462,14 @@ static void update_zprobe_zoffset() {
 //  delay(1000);
 //  enqueuecommands_P(PSTR("G1 Y110"));
 //  delay(1000);
+
+// Zprobe_zoffset CANNOT BE Greater than 0
+  if (zprobe_zoffset + zprobe_adj > 0) {
+    zprobe_zoffset = 0;
+  }
+  else {
   zprobe_zoffset = zprobe_zoffset + zprobe_adj;
+  }
   zprobe_adj = 0;
   Config_StoreSettings();
   //lcd_goto_menu(lcd_main_menu);    
@@ -581,6 +589,10 @@ static void lcd_main_menu() {
     // Settings menu
     //
     MENU_ITEM(submenu, MSG_SETTINGS, lcd_settings_menu);
+    //
+    // About page
+    //
+    MENU_ITEM(submenu, "About Jellybox", lcd_about);
     
     //#if ENABLED(DELTA_CALIBRATION_MENU)
       //MENU_ITEM(submenu, MSG_DELTA_CALIBRATE, lcd_delta_calibrate_menu);
@@ -896,6 +908,27 @@ void lcd_cooldown() {
 // bt =========== add Sub Menus
 /**
  *
+ * "About" submenu 
+ *
+ */
+
+static void lcd_about() {
+  START_MENU();
+  //
+  // ^ Main
+  //
+  MENU_ITEM(back, MSG_BACK, lcd_main_menu);
+  //
+  // Marlin Version
+  //
+    MENU_ITEM(gcode, "---------------------" , PSTR(""));
+    MENU_ITEM(gcode, marlin_base_ver , PSTR(""));
+    MENU_ITEM(gcode, jellybox_software_ver , PSTR(""));
+    MENU_ITEM(gcode, jellybox_hardware_ver , PSTR(""));
+  END_MENU();
+}
+/**
+ *
  * "Quick Set" submenu,  Renamed to "Adjustments" 
  *
  */
@@ -1049,7 +1082,7 @@ static void lcd_nozzle_temp_menu() {
   // Nozzle Temp
   //
   //#if TEMP_SENSOR_0 != 0
-      MENU_ITEM(function, "0C", execute_nozzle_temp_gcode_0);
+      MENU_ITEM(function, "Heating off", execute_nozzle_temp_gcode_0);
       MENU_ITEM(function, "200C", execute_nozzle_temp_gcode_200);
       MENU_ITEM(function, "210C", execute_nozzle_temp_gcode_210);
       MENU_ITEM(function, "220C", execute_nozzle_temp_gcode_220);
@@ -1065,12 +1098,12 @@ static void lcd_nozzle_temp_menu() {
  *
  */
 
-static void execute_bed_temp_gcode_30() {
-    enqueuecommands_P(PSTR("M140 S30"));
+static void execute_bed_temp_gcode_0() {
+    enqueuecommands_P(PSTR("M140 S0"));
     lcd_return_to_status();    
 }
-static void execute_bed_temp_gcode_40() {
-    enqueuecommands_P(PSTR("M140 S40"));
+static void execute_bed_temp_gcode_50() {
+    enqueuecommands_P(PSTR("M140 S50"));
     lcd_return_to_status();    
 }
 static void execute_bed_temp_gcode_60() {
@@ -1096,15 +1129,12 @@ static void lcd_bed_temp_menu() {
   //
   // Bed Temp
   //
-  //#if TEMP_SENSOR_0 != 0
-      MENU_ITEM(function, "30C", execute_bed_temp_gcode_30);
-      MENU_ITEM(function, "40C", execute_bed_temp_gcode_40);
+      MENU_ITEM(function, "Heating off", execute_bed_temp_gcode_0);
+      MENU_ITEM(function, "50C", execute_bed_temp_gcode_50);
       MENU_ITEM(function, "60C", execute_bed_temp_gcode_60);
       MENU_ITEM(function, "70C", execute_bed_temp_gcode_70);
-      MENU_ITEM_EDIT(int3, MSG_BED, &plaPreheatHPBTemp, 0, 95 - 15);
-      //MENU_ITEM_EDIT(int3, MSG_BED, &plaPreheatHPBTemp, BED_MINTEMP, BED_MAXTEMP - 15);
-  //#endif
-  
+      MENU_ITEM_EDIT(int3, MSG_BED, &plaPreheatHPBTemp, 0, 95 - 15); 
+
   END_MENU();
 }
 
@@ -2729,6 +2759,9 @@ void lcd_reset_alert_level() { lcd_status_message_level = 0; }
   bool lcd_clicked() { return LCD_CLICKED; }
 
 #endif // ULTIPANEL
+
+
+
 
 /*********************************/
 /** Number to string conversion **/

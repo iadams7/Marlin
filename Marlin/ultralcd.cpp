@@ -1848,6 +1848,9 @@ static void lcd_control_menu() {
   void copy_and_scalePID_i(int e) {
     PID_PARAM(Ki, e) = scalePID_i(raw_Ki);
     updatePID();
+// bt added Config Store Settings to PID per FG 7/25/16
+    Config_StoreSettings();
+
   }
   void copy_and_scalePID_d(int e) {
     PID_PARAM(Kd, e) = scalePID_d(raw_Kd);
@@ -1887,8 +1890,12 @@ static void lcd_control_temperature_menu() {
   MENU_ITEM(back, MSG_BACK, lcd_settings_menu);
   //MENU_ITEM(back, MSG_BACK, lcd_control_menu);
   //
+  // PID Autotune
+    MENU_ITEM(gcode, "PID autotune", PSTR("M303 S210 C8"));
+  //
   // bt ============================
 
+  
   // Nozzle, Bed, and Fan Control
   nozzle_bed_fan_menu_items(encoderLine, _lineNr, _drawLineNr, _menuItemNr, wasClicked, itemSelected);
 
@@ -1896,7 +1903,8 @@ static void lcd_control_temperature_menu() {
   // Autotemp, Min, Max, Fact
   //
   #if ENABLED(AUTOTEMP) && (TEMP_SENSOR_0 != 0)
-    MENU_ITEM_EDIT(bool, MSG_AUTOTEMP, &autotemp_enabled);
+// bt added Config Store Settings to auto temp per FG 7/25/16
+    MENU_ITEM_EDIT_CALLBACK(bool, MSG_AUTOTEMP, &autotemp_enabled, Config_StoreSettings);
     MENU_ITEM_EDIT(float3, MSG_MIN, &autotemp_min, 0, HEATER_0_MAXTEMP - 15);
     MENU_ITEM_EDIT(float3, MSG_MAX, &autotemp_max, 0, HEATER_0_MAXTEMP - 15);
     MENU_ITEM_EDIT(float32, MSG_FACTOR, &autotemp_factor, 0.0, 1.0);
@@ -1944,12 +1952,14 @@ static void lcd_control_temperature_menu() {
   //
   // Preheat PLA conf
   //
-  MENU_ITEM(submenu, MSG_PREHEAT_PLA_SETTINGS, lcd_control_temperature_preheat_pla_settings_menu);
+  // bt commented out next line per FG on 7/25/16
+//  MENU_ITEM(submenu, MSG_PREHEAT_PLA_SETTINGS, lcd_control_temperature_preheat_pla_settings_menu);
 
   //
   // Preheat ABS conf
   //
-  MENU_ITEM(submenu, MSG_PREHEAT_ABS_SETTINGS, lcd_control_temperature_preheat_abs_settings_menu);
+  // bt commented out next line per FG on 7/25/16
+//  MENU_ITEM(submenu, MSG_PREHEAT_ABS_SETTINGS, lcd_control_temperature_preheat_abs_settings_menu);
   END_MENU();
 }
 
@@ -2017,26 +2027,27 @@ static void lcd_control_motion_menu() {
     // MENU_ITEM_EDIT(float32, MSG_ZPROBE_ZOFFSET, &zprobe_zoffset, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX);
     // bt =======
   #endif
-  MENU_ITEM_EDIT(float5, MSG_ACC, &acceleration, 10, 99000);
-  MENU_ITEM_EDIT(float3, MSG_VXY_JERK, &max_xy_jerk, 1, 990);
-  MENU_ITEM_EDIT(float52, MSG_VZ_JERK, &max_z_jerk, 0.1, 990);
-  MENU_ITEM_EDIT(float3, MSG_VE_JERK, &max_e_jerk, 1, 990);
-  MENU_ITEM_EDIT(float3, MSG_VMAX MSG_X, &max_feedrate[X_AXIS], 1, 999);
-  MENU_ITEM_EDIT(float3, MSG_VMAX MSG_Y, &max_feedrate[Y_AXIS], 1, 999);
-  MENU_ITEM_EDIT(float3, MSG_VMAX MSG_Z, &max_feedrate[Z_AXIS], 1, 999);
-  MENU_ITEM_EDIT(float3, MSG_VMAX MSG_E, &max_feedrate[E_AXIS], 1, 999);
-  MENU_ITEM_EDIT(float3, MSG_VMIN, &minimumfeedrate, 0, 999);
-  MENU_ITEM_EDIT(float3, MSG_VTRAV_MIN, &mintravelfeedrate, 0, 999);
+// bt added Config Store Settings to Motion per FG 7/25/16
+  MENU_ITEM_EDIT_CALLBACK(float5, MSG_ACC, &acceleration, 10, 99000, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float3, MSG_VXY_JERK, &max_xy_jerk, 1, 990, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float52, MSG_VZ_JERK, &max_z_jerk, 0.1, 990, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float3, MSG_VE_JERK, &max_e_jerk, 1, 990, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float3, MSG_VMAX MSG_X, &max_feedrate[X_AXIS], 1, 999, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float3, MSG_VMAX MSG_Y, &max_feedrate[Y_AXIS], 1, 999, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float3, MSG_VMAX MSG_Z, &max_feedrate[Z_AXIS], 1, 999, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float3, MSG_VMAX MSG_E, &max_feedrate[E_AXIS], 1, 999, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float3, MSG_VMIN, &minimumfeedrate, 0, 999, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float3, MSG_VTRAV_MIN, &mintravelfeedrate, 0, 999, Config_StoreSettings);
   MENU_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_X, &max_acceleration_units_per_sq_second[X_AXIS], 100, 99000, reset_acceleration_rates);
   MENU_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_Y, &max_acceleration_units_per_sq_second[Y_AXIS], 100, 99000, reset_acceleration_rates);
   MENU_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_Z, &max_acceleration_units_per_sq_second[Z_AXIS], 10, 99000, reset_acceleration_rates);
   MENU_ITEM_EDIT_CALLBACK(long5, MSG_AMAX MSG_E, &max_acceleration_units_per_sq_second[E_AXIS], 100, 99000, reset_acceleration_rates);
-  MENU_ITEM_EDIT(float5, MSG_A_RETRACT, &retract_acceleration, 100, 99000);
-  MENU_ITEM_EDIT(float5, MSG_A_TRAVEL, &travel_acceleration, 100, 99000);
-  MENU_ITEM_EDIT(float52, MSG_XSTEPS, &axis_steps_per_unit[X_AXIS], 5, 9999);
-  MENU_ITEM_EDIT(float52, MSG_YSTEPS, &axis_steps_per_unit[Y_AXIS], 5, 9999);
-  MENU_ITEM_EDIT(float51, MSG_ZSTEPS, &axis_steps_per_unit[Z_AXIS], 5, 9999);
-  MENU_ITEM_EDIT(float51, MSG_ESTEPS, &axis_steps_per_unit[E_AXIS], 5, 9999);
+  MENU_ITEM_EDIT_CALLBACK(float5, MSG_A_RETRACT, &retract_acceleration, 100, 99000, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float5, MSG_A_TRAVEL, &travel_acceleration, 100, 99000, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float52, MSG_XSTEPS, &axis_steps_per_unit[X_AXIS], 5, 9999, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float52, MSG_YSTEPS, &axis_steps_per_unit[Y_AXIS], 5, 9999, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float51, MSG_ZSTEPS, &axis_steps_per_unit[Z_AXIS], 5, 9999, Config_StoreSettings);
+  MENU_ITEM_EDIT_CALLBACK(float51, MSG_ESTEPS, &axis_steps_per_unit[E_AXIS], 5, 9999, Config_StoreSettings);
   #if ENABLED(ABORT_ON_ENDSTOP_HIT_FEATURE_ENABLED)
     MENU_ITEM_EDIT(bool, MSG_ENDSTOP_ABORT, &abort_on_endstop_hit);
   #endif

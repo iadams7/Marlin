@@ -54,6 +54,8 @@
 #include "temperature.h"
 #include "ultralcd.h"
 #include "language.h"
+#include "configuration_store.h"
+
 
 #if ENABLED(MESH_BED_LEVELING)
   #include "mesh_bed_leveling.h"
@@ -1048,4 +1050,6 @@ void plan_set_e_position(const float& e) {
 void reset_acceleration_rates() {
   for (int i = 0; i < NUM_AXIS; i++)
     axis_steps_per_sqr_second[i] = max_acceleration_units_per_sq_second[i] * axis_steps_per_unit[i];
+// bt added Config Store Settings per FG 7/25/16
+    Config_StoreSettings();
 }

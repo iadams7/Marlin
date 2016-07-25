@@ -1848,8 +1848,6 @@ static void lcd_control_menu() {
   void copy_and_scalePID_i(int e) {
     PID_PARAM(Ki, e) = scalePID_i(raw_Ki);
     updatePID();
-// bt added Config Store Settings to PID per FG 7/25/16
-    Config_StoreSettings();
 
   }
   void copy_and_scalePID_d(int e) {
@@ -1880,6 +1878,14 @@ static void lcd_control_menu() {
  * "Control" > "Temperature" submenu
  *
  */
+
+ static void gcode_M303bt() {
+  int e =  0;
+  int c =  8;
+  float temp = 210.0;
+  PID_autotune(temp, e, c);
+}
+
 static void lcd_control_temperature_menu() {
   START_MENU();
 
@@ -1889,10 +1895,13 @@ static void lcd_control_temperature_menu() {
   //
   MENU_ITEM(back, MSG_BACK, lcd_settings_menu);
   //MENU_ITEM(back, MSG_BACK, lcd_control_menu);
+ // bt added PID autotune 7/21/16
   //
-  // PID Autotune
-    MENU_ITEM(gcode, "PID autotune", PSTR("M303 S210 C8"));
+  // PID Autotune 1
+    MENU_ITEM(gcode, "PID autotune FG", PSTR("M303 S210 C8 E0"));
   //
+  // PID Autotune 
+  //  MENU_ITEM(function, "PID autotune", gcode_m303bt());
   // bt ============================
 
   
@@ -1902,13 +1911,14 @@ static void lcd_control_temperature_menu() {
   //
   // Autotemp, Min, Max, Fact
   //
-  #if ENABLED(AUTOTEMP) && (TEMP_SENSOR_0 != 0)
+// bt Autotemp disabled per FG 7/25/16
+//  #if ENABLED(AUTOTEMP) && (TEMP_SENSOR_0 != 0)
 // bt added Config Store Settings to auto temp per FG 7/25/16
-    MENU_ITEM_EDIT_CALLBACK(bool, MSG_AUTOTEMP, &autotemp_enabled, Config_StoreSettings);
-    MENU_ITEM_EDIT(float3, MSG_MIN, &autotemp_min, 0, HEATER_0_MAXTEMP - 15);
-    MENU_ITEM_EDIT(float3, MSG_MAX, &autotemp_max, 0, HEATER_0_MAXTEMP - 15);
-    MENU_ITEM_EDIT(float32, MSG_FACTOR, &autotemp_factor, 0.0, 1.0);
-  #endif
+//    MENU_ITEM_EDIT_CALLBACK(bool, MSG_AUTOTEMP, &autotemp_enabled, Config_StoreSettings);
+//    MENU_ITEM_EDIT(float3, MSG_MIN, &autotemp_min, 0, HEATER_0_MAXTEMP - 15);
+//    MENU_ITEM_EDIT(float3, MSG_MAX, &autotemp_max, 0, HEATER_0_MAXTEMP - 15);
+//    MENU_ITEM_EDIT(float32, MSG_FACTOR, &autotemp_factor, 0.0, 1.0);
+//  #endif
 
   //
   // PID-P, PID-I, PID-D, PID-C

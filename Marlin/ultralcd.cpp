@@ -1914,12 +1914,14 @@ static void lcd_control_temperature_menu() {
   //
   // Preheat PLA conf
   //
-  MENU_ITEM(submenu, MSG_PREHEAT_PLA_SETTINGS, lcd_control_temperature_preheat_pla_settings_menu);
+  // bt commented out next line per FG on 7/25/16
+  //MENU_ITEM(submenu, MSG_PREHEAT_PLA_SETTINGS, lcd_control_temperature_preheat_pla_settings_menu);
 
   //
   // Preheat ABS conf
   //
-  MENU_ITEM(submenu, MSG_PREHEAT_ABS_SETTINGS, lcd_control_temperature_preheat_abs_settings_menu);
+  // bt commented out next line per FG on 7/25/16
+  //MENU_ITEM(submenu, MSG_PREHEAT_ABS_SETTINGS, lcd_control_temperature_preheat_abs_settings_menu);
   END_MENU();
 }
 

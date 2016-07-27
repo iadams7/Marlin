@@ -508,19 +508,18 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 
   // Offsets to the Z probe relative to the nozzle tip.
   // X and Y offsets must be integers.
-  //LG JellyBox proximity sensor offset
   #define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
   #define Y_PROBE_OFFSET_FROM_EXTRUDER -5     // Z probe to nozzle Y offset: -front +behind
   #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.01  // Z probe to nozzle Z offset: -below (always!)
 
-  #define Z_RAISE_BEFORE_HOMING 2       // (in mm) Raise Z axis before homing (G28) for Z probe clearance.
+  #define Z_RAISE_BEFORE_HOMING 5       // (in mm) Raise Z axis before homing (G28) for Z probe clearance. LG + FG 2 -> 5 on 7/27
                                         // Be sure you have this distance over your Z_MAX_POS in case.
 
   #define XY_TRAVEL_SPEED 8000         // X and Y axis travel speed between probes, in mm/min.
 
-  #define Z_RAISE_BEFORE_PROBING 4   // How much the Z axis will be raised before traveling to the first probing point.
-  #define Z_RAISE_BETWEEN_PROBINGS   // How much the Z axis will be raised when traveling from between next probing points.
-  #define Z_RAISE_AFTER_PROBING 3    // How much the Z axis will be raised after the last probing point.
+  #define Z_RAISE_BEFORE_PROBING 5   // How much the Z axis will be raised before traveling to the first probing point. LG + FG 4 -> 5 on 7/27
+  #define Z_RAISE_BETWEEN_PROBINGS 5  // How much the Z axis will be raised when traveling from between next probing points. LG + FG null -> 5 on 7/27
+  #define Z_RAISE_AFTER_PROBING 5    // How much the Z axis will be raised after the last probing point. LG + FG 3 -> 5 on 7/27
 
 //LG this section will be used for nozzle cleaning
 //#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10" // These commands will be executed in the end of G29 routine.

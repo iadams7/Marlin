@@ -8,7 +8,7 @@
 #if true
 #define SHORT_BUILD_VERSION "JB RC3"
 #define DETAILED_BUILD_VERSION "Marlin RC3 based; for IMADE3D Jellybox"
-#define STRING_DISTRIBUTION_DATE "June 2016"
+#define STRING_DISTRIBUTION_DATE "July 26 2016"
 // It might also be appropriate to define a location where additional information can be found
 #define SOURCE_CODE_URL  "https://github.com/IMADE3D/Marlin"
 #endif

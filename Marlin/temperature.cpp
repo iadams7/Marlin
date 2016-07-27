@@ -23,7 +23,6 @@
 #include "temperature.h"
 #include "language.h"
 #include "Sd2PinMap.h"
-#include "configuration_store.h"
 
 #if ENABLED(USE_WATCHDOG)
   #include "watchdog.h"
@@ -374,10 +373,6 @@ void updatePID() {
   #if ENABLED(PIDTEMPBED)
     temp_iState_max_bed = PID_BED_INTEGRAL_DRIVE_MAX / bedKi;
   #endif
-}
-
-// bt added Config Store Settings to PID per FG 7/25/16 in fact fg added here
-    Config_StoreSettings();
 }
 
 int getHeaterPower(int heater) {

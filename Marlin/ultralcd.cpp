@@ -461,8 +461,14 @@ static void update_zprobe_zoffset() {
 //  delay(1000);
 //  enqueuecommands_P(PSTR("G1 Y110"));
 //  delay(1000);
-  zprobe_zoffset = zprobe_zoffset + zprobe_adj;
-  zprobe_adj = 0;
+// Zprobe_zoffset CANNOT BE Greater than 0
+  if (zprobe_zoffset + zprobe_adj > 0) {
+    zprobe_zoffset = 0;
+  }
+  else {
+zprobe_zoffset = zprobe_zoffset + zprobe_adj;
+  }
+zprobe_adj = 0;
   Config_StoreSettings();
   //lcd_goto_menu(lcd_main_menu);
 }

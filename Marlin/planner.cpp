@@ -54,6 +54,7 @@
 #include "temperature.h"
 #include "ultralcd.h"
 #include "language.h"
+#include "configuration_store.h"
 
 #if ENABLED(MESH_BED_LEVELING)
   #include "mesh_bed_leveling.h"

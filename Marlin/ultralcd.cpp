@@ -578,7 +578,8 @@ static void lcd_main_menu() {
     //
     // 1st Layer Adj.
     //
-    MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer -/+", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
+    // FG COMMENTED OUT 08/19/2016. There's a bug that causes the z probe offset to become unpredictable when this funciton is used. 
+    // MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float32bt, "1st Layer -/+", &zprobe_adj, -0.2, 0.2,update_zprobe_zoffset);
     //
     // Set menu
     //

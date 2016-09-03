@@ -1,43 +1,33 @@
-/**
- * Marlin 3D Printer Firmware
- * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+/* Arduino Sd2Card Library
+ * Copyright (C) 2009 by William Greiman
  *
- * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * This file is part of the Arduino Sd2Card Library
  *
- * This program is free software: you can redistribute it and/or modify
+ * This Library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This Library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
-/**
- * Arduino Sd2Card Library
- * Copyright (C) 2009 by William Greiman
- *
- * This file is part of the Arduino Sd2Card Library
+ * along with the Arduino Sd2Card Library.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 #include "Marlin.h"
 
 #if ENABLED(SDSUPPORT)
 #include "Sd2Card.h"
-
 //------------------------------------------------------------------------------
 #if DISABLED(SOFTWARE_SPI)
   // functions for hardware SPI
   //------------------------------------------------------------------------------
   // make sure SPCR rate is in expected bits
   #if (SPR0 != 0 || SPR1 != 1)
-    #error "unexpected SPCR bits"
+    #error unexpected SPCR bits
   #endif
   /**
    * Initialize hardware SPI
@@ -45,8 +35,8 @@
    */
   static void spiInit(uint8_t spiRate) {
     // See avr processor documentation
-    SPCR = _BV(SPE) | _BV(MSTR) | (spiRate >> 1);
-    SPSR = spiRate & 1 || spiRate == 6 ? 0 : _BV(SPI2X);
+    SPCR = BIT(SPE) | BIT(MSTR) | (spiRate >> 1);
+    SPSR = spiRate & 1 || spiRate == 6 ? 0 : BIT(SPI2X);
   }
   //------------------------------------------------------------------------------
   /** SPI receive a byte */
@@ -100,10 +90,10 @@
     // no interrupts during byte receive - about 8 us
     cli();
     // output pin high - like sending 0XFF
-    WRITE(SPI_MOSI_PIN, HIGH);
+    fastDigitalWrite(SPI_MOSI_PIN, HIGH);
 
     for (uint8_t i = 0; i < 8; i++) {
-      WRITE(SPI_SCK_PIN, HIGH);
+      fastDigitalWrite(SPI_SCK_PIN, HIGH);
 
       // adjust so SCK is nice
       nop;
@@ -111,9 +101,9 @@
 
       data <<= 1;
 
-      if (READ(SPI_MISO_PIN)) data |= 1;
+      if (fastDigitalRead(SPI_MISO_PIN)) data |= 1;
 
-      WRITE(SPI_SCK_PIN, LOW);
+      fastDigitalWrite(SPI_SCK_PIN, LOW);
     }
     // enable interrupts
     sei();
@@ -131,13 +121,13 @@
     // no interrupts during byte send - about 8 us
     cli();
     for (uint8_t i = 0; i < 8; i++) {
-      WRITE(SPI_SCK_PIN, LOW);
+      fastDigitalWrite(SPI_SCK_PIN, LOW);
 
-      WRITE(SPI_MOSI_PIN, data & 0X80);
+      fastDigitalWrite(SPI_MOSI_PIN, data & 0X80);
 
       data <<= 1;
 
-      WRITE(SPI_SCK_PIN, HIGH);
+      fastDigitalWrite(SPI_SCK_PIN, HIGH);
     }
     // hold SCK high for a few ns
     nop;
@@ -145,7 +135,7 @@
     nop;
     nop;
 
-    WRITE(SPI_SCK_PIN, LOW);
+    fastDigitalWrite(SPI_SCK_PIN, LOW);
     // enable interrupts
     sei();
   }
@@ -366,7 +356,6 @@ bool Sd2Card::init(uint8_t sckRateID, uint8_t chipSelectPin) {
   #if DISABLED(SOFTWARE_SPI)
     return setSckRate(sckRateID);
   #else  // SOFTWARE_SPI
-    UNUSED(sckRateID);
     return true;
   #endif  // SOFTWARE_SPI
 
@@ -384,31 +373,38 @@ fail:
  * the value zero, false, is returned for failure.
  */
 bool Sd2Card::readBlock(uint32_t blockNumber, uint8_t* dst) {
+#if ENABLED(SD_CHECK_AND_RETRY)
+  uint8_t retryCnt = 3;
   // use address if not SDHC card
   if (type() != SD_CARD_TYPE_SDHC) blockNumber <<= 9;
+retry2:
+  retryCnt --;
+  if (cardCommand(CMD17, blockNumber)) {
+    error(SD_CARD_ERROR_CMD17);
+    if (retryCnt > 0) goto retry;
+    goto fail;
+  }
+  if (!readData(dst, 512)) {
+    if (retryCnt > 0) goto retry;
+    goto fail;
+  }
+  return true;
+retry:
+  chipSelectHigh();
+  cardCommand(CMD12, 0);//Try sending a stop command, but ignore the result.
+  errorCode_ = 0;
+  goto retry2;
+#else
+  // use address if not SDHC card
+  if (type() != SD_CARD_TYPE_SDHC) blockNumber <<= 9;
+  if (cardCommand(CMD17, blockNumber)) {
+    error(SD_CARD_ERROR_CMD17);
+    goto fail;
+  }
+  return readData(dst, 512);
+#endif
 
-  #if ENABLED(SD_CHECK_AND_RETRY)
-    uint8_t retryCnt = 3;
-    do {
-      if (!cardCommand(CMD17, blockNumber)) {
-        if (readData(dst, 512)) return true;
-      }
-      else
-        error(SD_CARD_ERROR_CMD17);
-
-      if (--retryCnt) break;
-
-      chipSelectHigh();
-      cardCommand(CMD12, 0); // Try sending a stop command, ignore the result.
-      errorCode_ = 0;
-    } while (true);
-  #else
-    if (cardCommand(CMD17, blockNumber))
-      error(SD_CARD_ERROR_CMD17);
-    else
-      return readData(dst, 512);
-  #endif
-
+fail:
   chipSelectHigh();
   return false;
 }
@@ -502,13 +498,9 @@ bool Sd2Card::readData(uint8_t* dst, uint16_t count) {
   spiRec();
 #endif
   chipSelectHigh();
-  // Send an additional dummy byte, required by Toshiba Flash Air SD Card
-  spiSend(0XFF);
   return true;
 fail:
   chipSelectHigh();
-  // Send an additional dummy byte, required by Toshiba Flash Air SD Card
-  spiSend(0XFF);
   return false;
 }
 //------------------------------------------------------------------------------

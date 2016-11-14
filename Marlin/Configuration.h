@@ -479,17 +479,17 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
   #define AUTO_BED_LEVELING_GRID
 
   #if ENABLED(AUTO_BED_LEVELING_GRID)
-    // LG727 these are the values for new alternative flat proximity sensor 7/27/206
-    // #define LEFT_PROBE_BED_POSITION 17 //FG same as safe homing position.
-    // #define RIGHT_PROBE_BED_POSITION 17+143 // Safe right position for flat proximity sensor
-    // #define FRONT_PROBE_BED_POSITION 13 //13 - matches to offset of proximity sensor from nozzle see Y_PROBE_OFFSET_FROM_EXTRUDER
-    // #define BACK_PROBE_BED_POSITION 13+122 //safe back position for flat proximity sensor
+    //LG727 these are the values for new alternative flat proximity sensor 7/27/206
+    #define LEFT_PROBE_BED_POSITION 17 //FG same as safe homing position.
+    #define RIGHT_PROBE_BED_POSITION 17+143 // Safe right position for flat proximity sensor
+    #define FRONT_PROBE_BED_POSITION 13 //13 - matches to offset of proximity sensor from nozzle see Y_PROBE_OFFSET_FROM_EXTRUDER
+    #define BACK_PROBE_BED_POSITION 13+118 //safe back position for flat proximity sensor
 
     // FG these are the values for traditional front mounted tall proximity sensor
-    #define LEFT_PROBE_BED_POSITION 17 //FG same as safe homing position. corresponds to the bolt in the bed assembly as a fail safe
-    #define RIGHT_PROBE_BED_POSITION 17+133 //corresponds to the bolt in the bed assembly as a fail safe
-    #define FRONT_PROBE_BED_POSITION 13 //corresponds to the bolt in the bed assembly as a fail safe
-    #define BACK_PROBE_BED_POSITION 13+132 //corresponds to the bolt in the bed assembly as a fail safe
+    // #define LEFT_PROBE_BED_POSITION 17 //FG same as safe homing position. corresponds to the bolt in the bed assembly as a fail safe
+    // #define RIGHT_PROBE_BED_POSITION 17+133 //corresponds to the bolt in the bed assembly as a fail safe
+    // #define FRONT_PROBE_BED_POSITION 13 //corresponds to the bolt in the bed assembly as a fail safe
+    // #define BACK_PROBE_BED_POSITION 13+132 //corresponds to the bolt in the bed assembly as a fail safe
 
     #define MIN_PROBE_EDGE 5 // The Z probe minimum square sides can be no smaller than this.
 
@@ -516,14 +516,14 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
   // X and Y offsets must be integers.
 
   // LG727 these are the values for new alternative flat proximity sensor 7/27/206 | back - flat 16x30x10
-  // #define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
-  // #define Y_PROBE_OFFSET_FROM_EXTRUDER 13     // Z probe to nozzle Y offset: -front +behind
-  // #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.5  // Z probe to nozzle Z offset: -below (always!)
+  #define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
+  #define Y_PROBE_OFFSET_FROM_EXTRUDER 13     // Z probe to nozzle Y offset: -front +behind
+  #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.01  // Z probe to nozzle Z offset: -below (always!)
 
   // FG these are the values for traditional front mounted tall proximity sensor
-  #define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
-  #define Y_PROBE_OFFSET_FROM_EXTRUDER -5     // Z probe to nozzle Y offset: -front +behind
-  #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.01  // Z probe to nozzle Z offset: -below (always!)
+  // #define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
+  // #define Y_PROBE_OFFSET_FROM_EXTRUDER -5     // Z probe to nozzle Y offset: -front +behind
+  // #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.01  // Z probe to nozzle Z offset: -below (always!)
 
   #define Z_RAISE_BEFORE_HOMING 5       // (in mm) Raise Z axis before homing (G28) for Z probe clearance. LG + FG 2 -> 5 on 7/27
                                         // Be sure you have this distance over your Z_MAX_POS in case.

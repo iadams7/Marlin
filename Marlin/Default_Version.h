@@ -5,10 +5,13 @@
 
 // #error "You must specify the following parameters related to your distribution"
 
+//Marlin RC3 based firmware for IMADE3D JellyBOX http://imade3d.com
+
 #if true
-#define SHORT_BUILD_VERSION "JellyBOX waking up!"
-#define DETAILED_BUILD_VERSION "Marlin RC3 based firmware for IMADE3D JellyBOX"
-#define STRING_DISTRIBUTION_DATE "v1.0.1 | 2016-09-02"
+#define GREETING "JellyBOX waking up!"
+#define SHORT_BUILD_VERSION "v1.0.1"
+#define DETAILED_BUILD_VERSION ""
+#define STRING_DISTRIBUTION_DATE "2016-09-02"
 // It might also be appropriate to define a location where additional information can be found
 #define SOURCE_CODE_URL  "https://github.com/IMADE3D/Marlin"
 #endif

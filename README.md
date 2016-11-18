@@ -1,19 +1,10 @@
+# Downloads
+Please go to https://github.com/IMADE3D/Marlin/releases to download what you need!
+
 # IMADE3D Flavour of Marlin 3D Printer Firmware
 <img align="top" width=120 src="Documentation/Logo/Marlin%20Logo%20GitHub.png" />
  
  Additional Marlin documentation can be found in [Marlin wiki](https://github.com/MarlinFirmware/Marlin/wiki/Main-Page) AND (work in progress) on the awesome and slick [Marlin Documentation Project](http://www.marlinfw.org/). 
-
-## Release Candidate -- JB-1.0-RC3 - June 9, 2016
-- Fine to use for production machines. Just waiting if any bugs come up before bumping to full 1.0 release
-
-## Recent Changes
-- RC3 - June 9, 2016
- - Menu revisions. Added homing of separate axes and reorganized a little bit. 
- - Z max travel raised. Switching to E3D Lite6 gave us more space. Let's use it then!
-- RC2
- - I don't even remember. Loads of development. 
-- RC1
--  Times of heavy experiments. You don't want this pre-release. 
 
 ## License (copied from the original Marlin page)
 

@@ -514,11 +514,6 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
   #define Y_PROBE_OFFSET_FROM_EXTRUDER 7     // Z probe to nozzle Y offset: -front +behind
   #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.01  // Z probe to nozzle Z offset: -below (always!)
 
-  // FG these are the values for traditional front mounted tall proximity sensor
-  // #define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
-  // #define Y_PROBE_OFFSET_FROM_EXTRUDER -5     // Z probe to nozzle Y offset: -front +behind
-  // #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.01  // Z probe to nozzle Z offset: -below (always!)
-
   #define Z_RAISE_BEFORE_HOMING 5       // (in mm) Raise Z axis before homing (G28) for Z probe clearance. LG + FG 2 -> 5 on 7/27
                                         // Be sure you have this distance over your Z_MAX_POS in case.
 

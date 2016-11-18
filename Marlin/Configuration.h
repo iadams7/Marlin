@@ -84,7 +84,7 @@ Here are some standard links for getting your machine calibrated:
 //#define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
 //LG defined serial number of machine
-#define MACHINE_UUID "JellyBox version 1.0 - prerelease with no serial number"
+#define MACHINE_UUID "JellyBox version 1.x -  with no serial number"
 
 // This defines the number of extruders
 // :[1,2,3,4]

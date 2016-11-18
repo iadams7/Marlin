@@ -158,8 +158,8 @@ Here are some standard links for getting your machine calibrated:
 //#define TEMP_SENSOR_2 1
 //#define TEMP_SENSOR_3 0
 
-//LG disabled bed temperature sensor.
-//#define TEMP_SENSOR_BED 0
+//LG heated bed temperature sensor (value 1)
+#define TEMP_SENSOR_BED 1
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
@@ -242,12 +242,14 @@ Here are some standard links for getting your machine calibrated:
 // If this is enabled, find your own PID constants below.
 //#define PIDTEMPBED
 
-//#define BED_LIMIT_SWITCHING
+//LG enabed
+#define BED_LIMIT_SWITCHING
 
 // This sets the max power delivered to the bed, and replaces the HEATER_BED_DUTY_CYCLE_DIVIDER option.
 // all forms of bed control obey this (PID, bang-bang, bang-bang with hysteresis)
 // setting this to anything other than 255 enables a form of PWM to the bed just like HEATER_BED_DUTY_CYCLE_DIVIDER did,
 // so you shouldn't use it unless you are OK with PWM on your bed.  (see the comment on enabling PIDTEMPBED)
+//LG heated bed  set max power to 70%  - 195
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 //#define PID_BED_DEBUG // Sends debug data to the serial port.

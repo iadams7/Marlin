@@ -49,9 +49,9 @@ Here are some standard links for getting your machine calibrated:
 // build by the user have been successfully uploaded into firmware.
 #define STRING_CONFIG_H_AUTHOR "IMADE3D" // Who made the changes.
 #define SHOW_BOOTSCREEN
-#define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
+#define STRING_SPLASH_LINE1 GREETING // will be shown during bootup in line 1
 //LG  enabled Line2 - distribution date
-#define STRING_SPLASH_LINE2 STRING_DISTRIBUTION_DATE // will be shown during bootup in line 2
+#define STRING_SPLASH_LINE2 SHORT_BUILD_VERSION // will be shown during bootup in line 2
 
 // @section machine
 
@@ -84,7 +84,7 @@ Here are some standard links for getting your machine calibrated:
 //#define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
 //LG defined serial number of machine
-#define MACHINE_UUID "JellyBox version 1.0 - prerelease with no serial number"
+#define MACHINE_UUID "JellyBox version 1.x -  with no serial number"
 
 // This defines the number of extruders
 // :[1,2,3,4]
@@ -410,7 +410,7 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 // X_MIN_POS -30 interacts with X_PROBE_OFFSET_FROM_EXTRUDER 30 and with Z_SAFE_HOMING_X_POINT 0 to get us the position we want both after G28 and after G29
 // notice how after G28 Y the bed extends forward a bit to get under the probe. that's the safe homing in flagranti
 
-#define X_MIN_POS -30  // this is big trick - to use negative value...
+#define X_MIN_POS -30  // this is a big trick - to use negative value...
 #define Y_MIN_POS 0
 #define Z_MIN_POS 0
 #define X_MAX_POS 176 // bed starts at 10mm from X_MIN_POS  (0 after X homing. It is important that nozzle is out of bed after homing).
@@ -481,15 +481,9 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
   #if ENABLED(AUTO_BED_LEVELING_GRID)
     //LG727 these are the values for new alternative flat proximity sensor 7/27/206
     #define LEFT_PROBE_BED_POSITION 17 //FG same as safe homing position.
-    #define RIGHT_PROBE_BED_POSITION 17+143 // Safe right position for flat proximity sensor
-    #define FRONT_PROBE_BED_POSITION 13 //13 - matches to offset of proximity sensor from nozzle see Y_PROBE_OFFSET_FROM_EXTRUDER
-    #define BACK_PROBE_BED_POSITION 13+118 //safe back position for flat proximity sensor
-
-    // FG these are the values for traditional front mounted tall proximity sensor
-    // #define LEFT_PROBE_BED_POSITION 17 //FG same as safe homing position. corresponds to the bolt in the bed assembly as a fail safe
-    // #define RIGHT_PROBE_BED_POSITION 17+133 //corresponds to the bolt in the bed assembly as a fail safe
-    // #define FRONT_PROBE_BED_POSITION 13 //corresponds to the bolt in the bed assembly as a fail safe
-    // #define BACK_PROBE_BED_POSITION 13+132 //corresponds to the bolt in the bed assembly as a fail safe
+    #define RIGHT_PROBE_BED_POSITION 17+143 // Safe right position for both flat and tall sensor
+    #define FRONT_PROBE_BED_POSITION 13 // combines with Y_PROBE_OFFSET_FROM_EXTRUDER. safe back position for both flat and tall proximity sensor
+    #define BACK_PROBE_BED_POSITION 13+124 //safe back position for both flat and tall proximity sensor
 
     #define MIN_PROBE_EDGE 5 // The Z probe minimum square sides can be no smaller than this.
 
@@ -517,13 +511,8 @@ const bool Z_MIN_PROBE_ENDSTOP_INVERTING = false; // set to true to invert the l
 
   // LG727 these are the values for new alternative flat proximity sensor 7/27/206 | back - flat 16x30x10
   #define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
-  #define Y_PROBE_OFFSET_FROM_EXTRUDER 13     // Z probe to nozzle Y offset: -front +behind
+  #define Y_PROBE_OFFSET_FROM_EXTRUDER 7     // Z probe to nozzle Y offset: -front +behind
   #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.01  // Z probe to nozzle Z offset: -below (always!)
-
-  // FG these are the values for traditional front mounted tall proximity sensor
-  // #define X_PROBE_OFFSET_FROM_EXTRUDER 30     // Z probe to nozzle X offset: -left  +right
-  // #define Y_PROBE_OFFSET_FROM_EXTRUDER -5     // Z probe to nozzle Y offset: -front +behind
-  // #define Z_PROBE_OFFSET_FROM_EXTRUDER -0.01  // Z probe to nozzle Z offset: -below (always!)
 
   #define Z_RAISE_BEFORE_HOMING 5       // (in mm) Raise Z axis before homing (G28) for Z probe clearance. LG + FG 2 -> 5 on 7/27
                                         // Be sure you have this distance over your Z_MAX_POS in case.

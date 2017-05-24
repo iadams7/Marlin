@@ -565,7 +565,7 @@
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-//#define FIX_MOUNTED_PROBE
+#define FIX_MOUNTED_PROBE
 
 /**
  * Z Servo Probe, such as an endstop switch on a rotating arm.
@@ -622,7 +622,7 @@
  *    (0,0)
  */
 #define X_PROBE_OFFSET_FROM_EXTRUDER 30  // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER 70  // Y offset: -front +behind [the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 7  // Y offset: -front +behind [the nozzle]
 #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
 
 // X and Y axis travel speed (mm/m) between probes
@@ -714,12 +714,12 @@
 // @section machine
 
 // Travel limits after homing (units are in mm)
-#define X_MIN_POS -30
-#define Y_MIN_POS 0
+#define X_MIN_POS -20
+#define Y_MIN_POS -2
 #define Z_MIN_POS 0
-#define X_MAX_POS 176
+#define X_MAX_POS 186
 #define Y_MAX_POS 166
-#define Z_MAX_POS 145
+#define Z_MAX_POS 146
 
 // If enabled, axes won't move below MIN_POS in response to movement commands.
 // #define MIN_SOFTWARE_ENDSTOPS // IM3D FG opposite from old marlin - testing this.
@@ -785,9 +785,9 @@
  *   With an LCD controller the process is guided step-by-step.
  */
 //#define AUTO_BED_LEVELING_3POINT
-//#define AUTO_BED_LEVELING_LINEAR
-//#define AUTO_BED_LEVELING_BILINEAR
-#define AUTO_BED_LEVELING_UBL
+#define AUTO_BED_LEVELING_LINEAR
+// #define AUTO_BED_LEVELING_BILINEAR
+//#define AUTO_BED_LEVELING_UBL
 //#define MESH_BED_LEVELING
 
 /**
@@ -812,9 +812,9 @@
 
   // Set the boundaries for probing (where the probe can reach).
   #define LEFT_PROBE_BED_POSITION 17
-  #define RIGHT_PROBE_BED_POSITION 17+143 
+  #define RIGHT_PROBE_BED_POSITION 160 
   #define FRONT_PROBE_BED_POSITION 13
-  #define BACK_PROBE_BED_POSITION 13+124
+  #define BACK_PROBE_BED_POSITION 137
 
   // The Z probe minimum outer margin (to validate G29 parameters).
   #define MIN_PROBE_EDGE 5
@@ -861,11 +861,11 @@
   #define GRID_MAX_POINTS_X 3      // _def 10 Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
   #define UBL_PROBE_PT_1_X 39       // These set the probe locations for when UBL does a 3-Point leveling
-  #define UBL_PROBE_PT_1_Y 145      // of the mesh.
+  #define UBL_PROBE_PT_1_Y 110      // of the mesh.
   #define UBL_PROBE_PT_2_X 39
-  #define UBL_PROBE_PT_2_Y 20
+  #define UBL_PROBE_PT_2_Y 100
   #define UBL_PROBE_PT_3_X 145
-  #define UBL_PROBE_PT_3_Y 20
+  #define UBL_PROBE_PT_3_Y 90
   //#define UBL_G26_MESH_EDITING    // Enable G26 mesh editing
 
 #elif ENABLED(MESH_BED_LEVELING)
@@ -886,7 +886,7 @@
  * Use the LCD controller for bed leveling
  * Requires MESH_BED_LEVELING or PROBE_MANUALLY
  */
-#define LCD_BED_LEVELING
+// #define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MBL_Z_STEP 0.025    // Step size while manually probing Z axis.
@@ -919,7 +919,7 @@
 // - If stepper drivers time out, it will need X and Y homing again before Z homing.
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing when homing all axes (G28).
 // - Prevent Z homing when the Z probe is outside bed area.
-//#define Z_SAFE_HOMING
+#define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT (17) // ((X_MIN_POS + X_MAX_POS) / 2)    // X point for Z homing when homing all axis (G28).
@@ -928,7 +928,7 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (4*60)
+#define HOMING_FEEDRATE_Z  (4*60) //fg was 4
 
 //=============================================================================
 //============================= Additional Features ===========================

@@ -4702,7 +4702,8 @@ void home_all_axes() { gcode_G28(); }
 
       #if ABL_GRID
 
-        bool zig = PR_OUTER_END & 1 ;  // Always end at RIGHT and BACK_PROBE_BED_POSITION //fg
+        bool zig = (PR_OUTER_END & 1) ? false : true;  // FG: Always end at LEFT and BACK_PROBE_BED_POSITION
+         // bool zig = PR_OUTER_END & 1;  // Always end at RIGHT and BACK_PROBE_BED_POSITION //
 
         // Outer loop is Y with PROBE_Y_FIRST disabled
         for (uint8_t PR_OUTER_VAR = 0; PR_OUTER_VAR < PR_OUTER_END; PR_OUTER_VAR++) {
@@ -4720,7 +4721,7 @@ void home_all_axes() { gcode_G28(); }
             inInc = -1;
           }
 
-          zig ^= true; // zag //fg
+          zig ^= true; // zag //fg this reverses the direction, but makes a zigzag
 
           // Inner loop is Y with PROBE_Y_FIRST enabled
           for (int8_t PR_INNER_VAR = inStart; PR_INNER_VAR != inStop; PR_INNER_VAR += inInc) {
